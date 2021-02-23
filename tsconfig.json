@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "lib": ["dom", "es2016"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "react",
+        "outDir": "./built/",
+        "sourceMap": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["resources/js/*"],
+            "*": ["node_modules/*"]
+        }
+    },
+    "include": ["resources/js/**/*"]
+}
