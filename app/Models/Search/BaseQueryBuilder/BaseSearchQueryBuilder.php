@@ -124,10 +124,10 @@ abstract class BaseSearchQueryBuilder
     }
 
     /**
-     * @param  array|string $orderBy
+     * @param  array|string  $orderBy
      * @return Builder
      */
-    protected function buildSearchOrderBy($orderBy): Builder
+    protected function buildSearchOrderBy(array|string $orderBy): Builder
     {
         if (is_string($orderBy)) {
             $orderBy = [$orderBy => 'asc'];

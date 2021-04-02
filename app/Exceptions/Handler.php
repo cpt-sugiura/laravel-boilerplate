@@ -3,15 +3,13 @@
 namespace App\Exceptions;
 
 use App\Http\HttpStatus;
+use App\Library\SQLFormatter\SqlFormatter;
 use App\Models\Eloquents\BaseEloquent;
-use App\UseCase\SQLFormatter\SqlFormatter;
 use Arr;
 use DB;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use JsonException;
 use Log;
@@ -40,41 +38,41 @@ class Handler extends ExceptionHandler
 
     /**
      * Render an exception into an HTTP response.
-     *
-     * @param  Request   $request
-     * @param  Exception $exception
-     * @throws Exception
+     * @param              $request
+     * @param  \Throwable  $e
      * @return Response
+     * @throws JsonException
+     * @throws \Throwable
      */
-    public function render($request, Exception $exception): Response
+    public function render($request, \Throwable $e): Response
     {
-        if ($exception instanceof ValidationException) {
+        if ($e instanceof ValidationException) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => implode("\n", Arr::flatten($exception->validator->getMessageBag()->toArray())),
+                    'message' => implode("\n", Arr::flatten($e->validator->getMessageBag()->toArray())),
                     'body'    => [
-                        'errors' => $exception->validator->getMessageBag()->toArray(),
+                        'errors' => $e->validator->getMessageBag()->toArray(),
                     ],
                 ],
                 HttpStatus::UNPROCESSABLE_ENTITY
             );
         }
-        if ($exception instanceof ValidationLikeException) {
+        if ($e instanceof ValidationLikeException) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => $exception->getMessage(),
+                    'message' => $e->getMessage(),
                 ],
                 HttpStatus::UNPROCESSABLE_ENTITY
             );
         }
 
-        if ($exception instanceof ModelNotFoundException) {
-            $exception = $this->handleModelNotFoundException($exception);
+        if ($e instanceof ModelNotFoundException) {
+            $e = $this->handleModelNotFoundException($e);
         }
 
-        $response = parent::render($request, $exception);
+        $response = parent::render($request, $e);
         ($response instanceof JsonResponse) && $this->setQueryLogToJsonResponse($response);
 
         if ($response->getStatusCode() === HttpStatus::INTERNAL_SERVER_ERROR) {
@@ -86,7 +84,7 @@ class Handler extends ExceptionHandler
                 ],
                 JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT
             ));
-            Log::channel('develop_slack')->error($exception);
+            Log::channel('develop_slack')->error($e);
             $content = $response->getContent();
             foreach (str_split($content, 5000) as $unit) {
                 Log::channel('develop_slack')->error($unit);
