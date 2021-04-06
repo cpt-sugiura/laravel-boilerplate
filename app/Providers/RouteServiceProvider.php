@@ -38,11 +38,14 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes(): void
     {
         Route::middleware('web')
-             ->namespace($this->namespace.'\\MemberWeb')
-             ->group(base_path('routes/member_web.php'));
+            ->namespace($this->namespace.'\\Web')
+            ->group(base_path('routes/web.php'));
         Route::middleware('web')
-             ->namespace($this->namespace.'\\AdminWeb')
-             ->group(base_path('routes/admin_web.php'));
+            ->namespace($this->namespace.'\\MemberWeb')
+            ->group(base_path('routes/member_web.php'));
+        Route::middleware('web')
+            ->namespace($this->namespace.'\\AdminWeb')
+            ->group(base_path('routes/admin_web.php'));
     }
 
     /**
