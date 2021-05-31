@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Eloquents;
+namespace App\Models\Eloquents\Member;
 
 use App\Models\Eloquents\BaseEloquent as Model;
 use Eloquent;
@@ -58,9 +58,9 @@ class Member extends Model implements AuthenticatableContract, AuthorizableContr
 {
     use Authenticatable;
     use Authorizable;
-    use MemberConcerns\MemberAuth;
-    use MemberConcerns\MemberRelations;
-    use MemberConcerns\MemberValidationRules;
+    use Concerns\MemberAuth;
+    use Concerns\MemberRelations;
+    use Concerns\MemberValidationRules;
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;
@@ -72,10 +72,10 @@ class Member extends Model implements AuthenticatableContract, AuthorizableContr
     public const AUTH_TOKEN_LENGTH = 80;
 
     public const STATUS_DISABLE = 0;
-    public const STATUS_ABLE    = 1;
+    public const STATUS_ENABLE    = 1;
     public const STATUS_LIST    = [
         self::STATUS_DISABLE => '無効',
-        self::STATUS_ABLE    => '有効',
+        self::STATUS_ENABLE  => '有効',
     ];
 
     protected static function boot(): void

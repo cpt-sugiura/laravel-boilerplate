@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Models\Eloquents;
+namespace App\Models\Eloquents\Member;
 
 use App\Models\Eloquents\BaseEloquent as Model;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Str;
 
@@ -13,15 +12,12 @@ use Str;
  * Class ApiToken
  *
  * @property int                         $id
- * @property int                         $application_user_company_id
  * @property string                      $token APIトークン. これ抜きでAPIが叩かれたら通信拒否
  * @property Carbon|null                 $created_at
  * @property Carbon|null                 $updated_at
- * @property ApplicationUserCompany $applicationUserCompany
  * @method static Builder|MemberApiToken newModelQuery()
  * @method static Builder|MemberApiToken newQuery()
  * @method static Builder|MemberApiToken query()
- * @method static Builder|MemberApiToken whereApplicationUserCompanyId($value)
  * @method static Builder|MemberApiToken whereCreatedAt($value)
  * @method static Builder|MemberApiToken whereId($value)
  * @method static Builder|MemberApiToken whereToken($value)
@@ -51,7 +47,6 @@ class MemberApiToken extends Model
     }
 
     public $fillable = [
-        'application_user_company_id',
         'token'
     ];
 
@@ -62,7 +57,6 @@ class MemberApiToken extends Model
      */
     protected $casts = [
         'id'                          => 'integer',
-        'application_user_company_id' => 'integer',
         'token'                       => 'string'
     ];
 
@@ -74,23 +68,13 @@ class MemberApiToken extends Model
     public static function rules(): array
     {
         return [
-            'application_user_company_id' => ['integer', 'between:0,18446744073709551615'],
             'token'                       => ['string', 'max:255'],
         ];
-    }
-
-    /**
-     * @return BelongsTo
-     **/
-    public function applicationUserCompany(): BelongsTo
-    {
-        return $this->belongsTo(ApplicationUserCompany::class, 'application_user_company_id');
     }
 
     public static function ruleAttributes(): array
     {
         return [
-              'application_user_company_id' => '',
               'token'                       => 'APIトークン. これ抜きでAPIが叩かれたら通信拒否',
         ];
     }

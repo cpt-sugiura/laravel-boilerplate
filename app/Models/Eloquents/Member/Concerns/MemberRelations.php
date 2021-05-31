@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Models\Eloquents\MemberConcerns;
+namespace App\Models\Eloquents\Member\Concerns;
 
 use App\Models\Eloquents\MemberDeviceToken;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait MemberRelations
 {

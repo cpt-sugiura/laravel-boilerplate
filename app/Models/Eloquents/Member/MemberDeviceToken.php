@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Eloquents;
+namespace App\Models\Eloquents\Member;
 
 use App\Models\Eloquents\BaseEloquent as Model;
 use Eloquent;

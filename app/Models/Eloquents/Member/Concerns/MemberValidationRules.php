@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Eloquents\MemberConcerns;
+namespace App\Models\Eloquents\Member\Concerns;
 
 use App\ConstantValues\Person;
 use App\Library\Rules\Password\PasswordCheck;

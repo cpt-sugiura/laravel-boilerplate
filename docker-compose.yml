@@ -56,5 +56,26 @@ services:
       - 8025:8025
       - 1025:1025
 
+  mail:
+    build:
+      context: ./docker/mail
+    hostname: ${MAIL_HOSTNAME}
+    domainname: ${MAIL_DOMAINNAME}
+    # 開発環境、グローバルネットワーク環境でメールを実際に飛ばしたいときは
+    # dns のコメントアウトを外して、google の奴とつなげる
+    # 本番環境では、ホストマシンの知る独自 dns が必須のためコメントアウト
+    dns: 8.8.8.8
+    ports:
+      - 25:25
+      - 587:587
+    volumes:
+      - maildata:/var/mail
+    env_file:
+      - .env
+      - env-mailserver
+    cap_add:
+      - SYS_PTRACE
+
 volumes:
   php-fpm-socket:
+  maildata:

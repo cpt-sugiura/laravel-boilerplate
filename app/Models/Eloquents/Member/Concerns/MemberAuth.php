@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Eloquents\MemberConcerns;
+namespace App\Models\Eloquents\Member\Concerns;
 
 use App\Library\Notifications\MemberPasswordResetNotification;
 use Auth;
@@ -87,6 +87,6 @@ trait MemberAuth
      */
     public function canUseAccount(): bool
     {
-        return $this->status === self::STATUS_ABLE;
+        return $this->status === self::STATUS_ENABLE;
     }
 }

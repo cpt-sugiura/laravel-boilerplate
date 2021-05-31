@@ -27,7 +27,8 @@ RUN docker-php-ext-install \
         mbstring \
         zip \
         bcmath
-RUN  composer config -g process-timeout 3600
+RUN pecl install grpc
+RUN composer config -g process-timeout 3600
 
 COPY ./php-fpm.d/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 COPY ./php.ini /usr/local/etc/php/php.ini

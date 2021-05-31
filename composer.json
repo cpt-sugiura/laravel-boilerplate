@@ -23,8 +23,9 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.7",
         "fakerphp/faker": "^1.13",
-        "infyomlabs/laravel-generator": "8.0.x-dev",
         "friendsofphp/php-cs-fixer": "^2.16",
+        "greenlion/php-sql-parser": "^4.4",
+        "infyomlabs/laravel-generator": "8.0.x-dev",
         "itsgoingd/clockwork": "^5.0",
         "laravel/dusk": "^6.4",
         "mockery/mockery": "^1.4",
