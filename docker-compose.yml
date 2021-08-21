@@ -1,0 +1,81 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ./docker/php
+      args:
+        - TZ=${APP_TZ:-Asia/Tokyo}
+    volumes:
+      - php-fpm-socket:/var/run/php-fpm
+      - ./:/work/backend
+
+  web:
+    depends_on:
+      - app
+    ports:
+      - ${DOCKER_WEB_PORT:-80}:80
+    build: ./docker/nginx
+    volumes:
+      - php-fpm-socket:/var/run/php-fpm
+      - ./:/work/backend
+      - ./docker/log/nginx:/var/log/nginx
+    environment:
+      - TZ=${APP_TZ}
+
+  mysql:
+    build:
+      context: ./docker/mysql
+      args:
+        - MYSQL_VERSION=8.0
+    volumes:
+      - ./docker/log/mysql:/var/log/mysql
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - TZ=${APP_TZ}
+    ports:
+      - ${DB_PORT:-3306}:3306
+
+  swagger:
+    build:
+      context: ./docker/swagger
+    volumes:
+      - ./docs/swagger/api.yaml:/usr/share/nginx/html/api.yaml
+      - ./public/docs:/tmp/dump/html
+    environment:
+      API_URL: api.yaml
+    ports:
+      - 801:80
+      - 8010:8080
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+      - 1025:1025
+
+  mail:
+    build:
+      context: ./docker/mail
+    hostname: ${MAIL_HOSTNAME}
+    domainname: ${MAIL_DOMAINNAME}
+    # 開発環境、グローバルネットワーク環境でメールを実際に飛ばしたいときは
+    # dns のコメントアウトを外して、google の奴とつなげる
+    # 本番環境では、ホストマシンの知る独自 dns が必須のためコメントアウト
+    dns: 8.8.8.8
+    ports:
+      - 25:25
+      - 587:587
+    volumes:
+      - maildata:/var/mail
+    env_file:
+      - .env
+      - env-mailserver
+    cap_add:
+      - SYS_PTRACE
+
+volumes:
+  php-fpm-socket:
+  maildata:

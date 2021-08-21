@@ -1,0 +1,7 @@
+@import "app";
+html, body, #app {
+    background: $base-background-color;
+    div > form > div.MuiBox-root.MuiBox-root-2.col > div > div > input{
+        background: #ffffff;
+    }
+}

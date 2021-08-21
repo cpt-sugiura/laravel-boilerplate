@@ -1,0 +1,13 @@
+.app-per-page-select {
+  display: flex;
+  align-items: center;
+
+  .MuiFormControl-root {
+    width: max-content;
+    margin: 0 5px;
+  }
+
+  .MuiSvgIcon-root.MuiSelect-icon {
+    right: 0;
+  }
+}

@@ -1,0 +1,16 @@
+.MuiInputBase-root {
+    &.Mui-error {
+        fieldset.MuiOutlinedInput-notchedOutline {
+            border-color: #f44336;
+        }
+    }
+    &:not(.Mui-error):hover {
+        border-color: rgba(0, 0, 0, 0.87);
+        fieldset.MuiOutlinedInput-notchedOutline {
+            border-color: rgba(0, 0, 0, 0.87);
+        }
+    }
+    input.MuiInputBase-input.MuiOutlinedInput-input {
+        color: rgba(0, 0, 0, 0.87);
+    }
+}

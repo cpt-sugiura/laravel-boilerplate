@@ -1,0 +1,15 @@
+.admin-form-fields-root {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    grid-template-areas:
+    "name email"
+    "password passwordConfirm"
+    ;
+    padding-bottom: 10px;// 送信ボタンとの隙間。
+
+    .name { grid-area: name; }
+    .email { grid-area: email; }
+    .password { grid-area: password; }
+    .passwordConfirm { grid-area: passwordConfirm; }
+}

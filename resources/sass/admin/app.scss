@@ -1,0 +1,138 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+.app-radio-buttons {
+    display: inline-block;
+    label.MuiFormLabel-root {
+        margin: 0.5em 0;
+        display: block;
+    }
+}
+@import "resources/sass/app";
+// Variables
+@import "resources/sass/variables";
+@import "resources/sass/admin/variables";
+@import "search-box";
+
+html,
+body,
+#app {
+
+    .soil-matching-background{
+        background: $primary-50;
+    }
+    a {
+        color: $menubar-text-color;
+        text-decoration: none;
+        &.nav-link-active {
+            background-color: $primary-A100;
+            > div {
+                background-color: $primary-A100;
+            }
+        }
+    }
+    .row {
+        display: flex;
+        flex-direction: row;
+        &.space {
+            > *:first-child {
+                margin-right: 0.25em;
+            }
+            > *:not(:last-child):not(:first-child) {
+                margin-left: 0.25em;
+                margin-right: 0.25em;
+            }
+            > *:last-child {
+                margin-left: 0.25em;
+            }
+        }
+    }
+
+    .col {
+        display: flex;
+        flex-direction: column;
+        &.space {
+            > *:first-child {
+                margin-bottom: 0.25em;
+            }
+            > *:not(:last-child):not(:first-child) {
+                margin-top: 0.25em;
+                margin-bottom: 0.25em;
+            }
+            > *:last-child {
+                margin-top: 0.25em;
+            }
+        }
+    }
+
+    .form-paper > *{
+        &:not(:first-child):not(:last-child) {
+            margin-top: .25em;
+            margin-bottom: .25em;
+        }
+        &:first-child {
+            margin-bottom: .25em;
+        }
+        &:last-child {
+            margin-top: .25em;
+        }
+    }
+    .form-page-content-root > * {
+        &:not(:first-child):not(:last-child) {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        &:first-child {
+            margin-bottom: 1em;
+        }
+        &:last-child {
+            margin-top: 1em;
+        }
+    }
+
+    input{
+        &[type="number"],&.number{
+            text-align: end;
+        }
+    }
+    .submit-btn {
+        height: fit-content;
+        width: fit-content;
+        width: -moz-fit-content;
+        color: #FFF;
+        background-color: $primary-500;
+    }
+    .MuiFormControl-root.MuiTextField-root.as-text {
+        .MuiOutlinedInput-root.Mui-disabled {
+            color: #000;
+
+            fieldset {
+                border: none;
+            }
+        }
+    }
+}
+
+
+/* 文字列を全てパスワード記号で埋めるフォントを設定 */
+@font-face {
+    font-family: 'password';
+    src: url(/assets/fonts/text-security-disc.ttf);
+}
+/** クラスに mimic-password を持つフォームコントロールなど箱の中身ならば入力された文字列を全てパスワード記号化 */
+.mimic-password input[type="text"]{
+    font-family: 'password';
+}
+
+kbd {
+    background-color: #eee;
+    border-radius: 3px;
+    border: 1px solid #b4b4b4;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 20%), 0 2px 0 0 rgb(255 255 255 / 70%) inset;
+    color: #333;
+    display: inline-block;
+    font-size: .85em;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 4px;
+    white-space: nowrap;
+}

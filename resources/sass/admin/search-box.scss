@@ -1,0 +1,25 @@
+@import "resources/sass/admin/variables";
+
+
+#app {
+    .search-box {
+        padding: 1% 2%;
+        margin: 0 0 10px 0;
+
+        &.without-grid > div {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-btn + .control-btn {
+            margin-left: $search-box-gap-size;
+        }
+    }
+
+    .search-result-table {
+        button {
+            padding: 0
+        }
+    }
+}

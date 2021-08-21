@@ -1,0 +1,130 @@
+# 会員
+member_api_tokens:
+  comment: 会員用APIトークン
+  columns:
+    id: bigIncrements
+    token:
+      type: string
+      comment: APIトークン. これ抜きでAPIが叩かれたら通信拒否
+    timestamps:
+
+members:
+  comment: 会員
+  indexes:
+    admin_search_default_index:
+      columns:
+        - created_at
+        - deleted_at
+      type: index
+      alias: members_admin_search_default_index
+    default_index:
+      columns:
+        - deleted_at
+      type: index
+  columns:
+    member_id: bigIncrements
+    name:
+      type: string
+      comment: 名前
+    gender:
+      type: integer
+      comment: 性別
+    birthday:
+      type: date
+      comment: 生年月日
+    email:
+      type: string
+      comment: メールアドレス
+      index: true
+    password:
+      type: string
+      comment: パスワード
+    status:
+      type: integer
+      comment: ステータス
+    auth_token:
+      type: string
+      comment: 認証用トークン。ログイン時限定APIでこれが送られてない時は弾く
+      unique: true
+      nullable: true
+      default: null
+    timestamps:
+    softDeletes:
+
+member_password_reset_tokens:
+  comment: 会員用パスワードリセットトークン
+  columns:
+    email:
+      type: string
+      index: true
+    token: string
+    created_at:
+      type: timestamp
+      nullable: true
+
+member_device_tokens:
+  comment: 会員用デバイストークン
+  relations:
+    - foreign: member_id
+      references: member_id
+      on: members
+      onUpdate: cascade
+      onDelete: cascade
+  indexes:
+    default_index:
+      columns:
+        - deleted_at
+      type: index
+  columns:
+    member_device_token_id: bigIncrements
+    member_id: unsignedBigInteger
+    device_token:
+      type: string
+      comment: デバイストークン
+    some_notify_control:
+      type: integer
+      comment: 何か通知制御
+    timestamps:
+
+# 管理者
+admins:
+  comment: 管理者
+  columns:
+    admin_id: bigIncrements
+    name:
+      type: string
+      comment: 名前
+    email:
+      type: string
+      comment: メールアドレス
+      index: true
+    password:
+      type: string
+      comment: パスワード
+    remember_token:
+      type: string
+      comment: 継続ログイン用トークン
+    timestamps:
+    softDeletes:
+
+admin_password_reset_tokens:
+  comment: 管理者用パスワードリセットトークン
+  columns:
+    email:
+      type: string
+      index: true
+    token: string
+    created_at:
+      type: timestamp
+      nullable: true
+
+failed_jobs:
+  columns:
+    id: bigIncrements
+    connection: text
+    queue: text
+    payload: longText
+    exception: longText
+    failed_at:
+      type: timestamp
+      useCurrent: true

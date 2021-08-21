@@ -1,0 +1,68 @@
+app:
+  title:
+  logout: ログアウト
+  loading: ロード中です。
+  connectionError: 通信エラー
+  return: 戻る
+  close: 閉じる
+  cancel: キャンセル
+  control: 操作
+  download: ダウンロード
+  downloadAll: 一括ダウンロード
+  fileList: ファイル一覧
+  config: 設定
+  undefined:
+    input: 未記入
+    select: 未選択
+  confirm:
+    modal:
+      title: 確認
+  update:
+    modal:
+      title: 更新結果
+    btn: 更新
+    loading: 更新中
+  delete:
+    modal:
+      title: 削除結果
+    confirm:
+      title: 削除確認
+      msg: 本当に削除してよろしいでしょうか？
+    btn: 削除
+    loading: 削除中
+    multiple:
+      btn: まとめて削除
+    until: 未削除
+    done: 削除済み
+    cancel: 取消
+  lang: 言語
+error:
+  validationError: "バリデーションエラーがありました。入力内容をご確認ください。"
+validation:
+  notSamePassword: パスワードと一致していません。
+  notSameEmail: メールアドレスと一致していません。
+  password: '${path}は8文字以上の英数字で入力してください。'
+  zip: '${path}は7桁の数字で指定してください。'
+  phoneNumber: '${path}はハイフン区切りで10桁から11桁で指定してください。'
+  numeric: '${path}は数値で指定してください。'
+search:
+  pagination:
+    searching: 検索中です
+    currentPosition: "{total} 件中 {from} ~ {to} 件目を表示"
+    tail: 件
+    perPage: 表示件数
+  searchBox:
+    reset: リセット
+    run: 検索する
+datepicker:
+  selectYear: 年選択（{year}年）
+  format: "yyyy年MM月dd日 HH:mm"
+  okLabel: 決定
+  cancelLabel: 戻る
+  clearLabel: 入力を削除
+  invalidDateMessage: 正しい形式で入力してください
+form:
+  labelDeco:
+    required: 【必須】
+  cantPast:
+    msg: "{label}には貼り付けできません。"
