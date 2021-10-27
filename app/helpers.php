@@ -19,7 +19,7 @@ if (! function_exists('get_query_log')) {
      */
     function get_query_log(): string
     {
-        return \App\Services\SQLFormatter\SqlFormatter::formatWithBindArr(DB::getQueryLog());
+        return App\Library\SQLFormatter\SqlFormatter::formatWithBindArr(DB::getQueryLog());
     }
 }
 if (! function_exists('bounden_sql')) {
@@ -211,7 +211,7 @@ if (! function_exists('before_insert_required_rule')) {
      * @param  array|string $rule
      * @return array|string
      */
-    function before_insert_required_rule($rule)
+    function before_insert_required_rule($rule): array|string
     {
         /* @var string|array $rule */
         if (is_string($rule) && strpos($rule, 'nullable') === false) {
@@ -272,5 +272,48 @@ if (! function_exists('mb_wordwrap')) {
         }
 
         return $result;
+    }
+}
+
+if (! function_exists('is_production')) {
+    function is_production(): bool
+    {
+        return config('app.env') === config('app.in_production_env_name');
+    }
+}
+
+if (! function_exists('dev_slack_log')) {
+    function dev_slack_log(): Illuminate\Support\Optional | \Psr\Log\LoggerInterface
+    {
+        if (! config('logging.channels.develop_slack.url')) {
+            return optional();
+        }
+
+        return \Log::channel('develop_slack');
+    }
+}
+
+if (! function_exists('csv2str')) {
+    /**
+     * 二次元配列をCSV文字列化
+     * @param  iterable $lines     string[][]を想定
+     * @param  string   $delimiter
+     * @param  string   $enclosure
+     * @return string
+     */
+    function csv2str(iterable $lines, string $delimiter = ',', string $enclosure = '"'): string
+    {
+        $fp = fopen('php://temp', 'rb+');
+        foreach ($lines as $line) {
+            fputcsv($fp, $line, $delimiter, $enclosure);
+        }
+        rewind($fp);
+        $csv = '';
+        while (! feof($fp)) {
+            $csv .= fread($fp, 8192);
+        }
+        fclose($fp);
+
+        return $csv;
     }
 }

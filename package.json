@@ -1,6 +1,8 @@
 {
     "private": true,
     "scripts": {
+        "deploy-prepare": "npm run production && docker-compose exec app make instant-deploy-prepare",
+        "deploy-run": "make instant-deploy-run",
         "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "build-swagger": "docker-compose exec swagger cp -r /usr/share/nginx/html /tmp/dump",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
@@ -15,17 +17,22 @@
         "test-php-api": "php vendor/phpunit/phpunit/phpunit --configuration phpunit.xml tests\\API --teamcity",
         "test-php-unit": "php vendor/phpunit/phpunit/phpunit --configuration phpunit.xml tests\\Unit --teamcity",
         "watch": "npm run development -- --watch",
-        "watch-poll": "npm run watch -- --watch-poll"
+        "watch-poll": "npm run watch -- --watch-poll",
+        "pre-commit": "npx lint-staged && node gitHooks/preCommit.js",
+        "post-merge": "node gitHooks/postMerge.js",
+        "docker-clean-app-container": "docker ps -aq -f status=exited -f ancestor=_web_app | wsl xargs -r docker rm"
     },
     "simple-git-hooks": {
-        "pre-commit": "npx lint-staged && node gitHooks/preCommit.js",
-        "post-merge": "node gitHooks/postMerge.js"
+        "pre-commit": "npm run pre-commit",
+        "post-merge": "npm run post-merge"
+    },
+    "app-lint-staged": {
+        "*.php": [
+            "docker-compose run --rm app ./vendor/bin/php-cs-fixer fix -vvv --config ./.php-cs-fixer.php",
+            "git add"
+        ]
     },
     "lint-staged": {
-        "*.php": [
-            "docker-compose run -it --rm app ./vendor/bin/php-cs-fixer fix -vvv --config .php-cs-fixer",
-            "git add"
-        ],
         "*.{js,ts,vue,jsx,tsx}": [
             "eslint --fix",
             "git add"
@@ -47,38 +54,33 @@
         ]
     },
     "dependencies": {
-        "@babel/core": "^7.15.0",
-        "@hookform/resolvers": "^2.8.0",
-        "@material-ui/core": "^4.12.3",
-        "@material-ui/icons": "^4.11.2",
-        "@material-ui/lab": "^4.0.0-alpha.60",
-        "@material-ui/pickers": "^3.3.10",
+        "@babel/core": "^7.15.5",
+        "@hookform/resolvers": "^2.8.1",
         "@types/base-64": "^1.0.0",
         "@types/qs": "^6.9.7",
-        "@types/react": "^17.0.19",
+        "@types/react": "^17.0.22",
         "@types/react-dom": "^17.0.9",
-        "@types/react-router-dom": "^5.1.8",
+        "@types/react-router-dom": "^5.1.9",
         "@types/yup": "^0.29.13",
-        "axios": "^0.21.1",
+        "axios": "^0.21.4",
         "babel-loader": "^8.2.2",
         "base-64": "^1.0.0",
-        "beautiful-react-hooks": "^0.35.0",
+        "beautiful-react-hooks": "^1.0.1",
         "cross-env": "^7.0.3",
         "css-purge": "^3.1.8",
-        "date-fns": "^2.23.0",
-        "expect": "^27.0.6",
+        "date-fns": "^2.24.0",
+        "expect": "^27.2.1",
         "http-status-codes": "^2.1.4",
-        "japanese-holidays": "^1.0.10",
         "json-loader": "^0.5.7",
-        "laravel-mix": "^6.0.28",
+        "laravel-mix": "^6.0.31",
         "license-checker": "^25.0.1",
         "npm-run-all": "^4.1.5",
         "qs": "^6.10.1",
         "react": "^17.0.2",
         "react-contextmenu": "^2.14.0",
         "react-dom": "^17.0.2",
-        "react-dropzone": "^11.3.4",
-        "react-hook-form": "^7.12.2",
+        "react-dropzone": "^11.4.0",
+        "react-hook-form": "^7.15.4",
         "react-icons": "^4.2.0",
         "react-intl": "^5.20.10",
         "react-router": "^5.2.0",

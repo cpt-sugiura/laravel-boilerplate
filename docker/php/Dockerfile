@@ -1,8 +1,11 @@
-FROM php:8.0-fpm-buster
+# for nginx
+#FROM php:8.0-fpm-buster
+# for apache
+FROM php:8.0-apache-buster
 SHELL ["/bin/bash", "-oeux", "pipefail", "-c"]
 
 # timezone environment
-ENV TZ=JST \
+ENV TZ=Asia/Tokyo \
   # composer environment
   COMPOSER_ALLOW_SUPERUSER=1 \
   COMPOSER_HOME=/composer

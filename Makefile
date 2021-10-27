@@ -22,3 +22,20 @@ install-staging-server:
 	npm run dev
 	chmod 777 -R storage/logs
 	chmod 777 -R storage/framework
+
+# 本番適用を早く済ませるために、あらかじめビルドできるものはビルドしておくコマンド
+instant-deploy-prepare:
+	mkdir -p production-build/public/assets
+	cp -r public/assets/admin  production-build/public/assets
+	mkdir -p production-build/storage/app/assets
+	cp -r storage/app/assets/admin  production-build/storage/app/assets
+	gzip --recursive --keep --force production-build/public/assets/admin/js/*.js
+	gzip --recursive --keep --force production-build/public/assets/admin/js/*.txt
+	gzip --recursive --keep --force production-build/public/assets/admin/css/*.css
+	gzip --recursive --keep --force production-build/storage/app/assets/admin/js/*.js
+	gzip --recursive --keep --force production-build/storage/app/assets/admin/js/*.txt
+	gzip --recursive --keep --force production-build/storage/app/assets/admin/css/*.css
+# 本番適用を早く済ませるためのコマンド
+instant-deploy-run:
+	cp -r production-build/public/* public
+	cp -r production-build/storage/app/assets/* storage/app/assets
