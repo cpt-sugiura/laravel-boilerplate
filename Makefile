@@ -7,6 +7,7 @@ install:
 	docker-compose exec app php artisan migrate:fresh --seed
 	npm install
 	npm run dev
+	npx simple-git-hooks
 create-skeleton-model-all:
 	docker-compose exec app php artisan dacapo:generate
 	docker-compose exec app php artisan migrate:fresh

@@ -317,3 +317,95 @@ if (! function_exists('csv2str')) {
         return $csv;
     }
 }
+
+if (! function_exists('request_arr_to_html_input_arr')) {
+    /**
+     * 多次元配列を &lt;input name="{$name}" value="{$value}"&gt; で使いやすい形にする。
+     * <pre>
+     * input: [
+     *   'name'      => '浜松太郎',
+     *   'checkbox1' => [0 => '1', 1 => '3', 2 => '5',],
+     *   'families'  => [
+     *     0 => [
+     *       'name'      => '静岡太郎',
+     *       'checkbox1' => [0 => '2', 1 => '5',],
+     *     ],
+     *     3 => ['checkbox1' => [0 => '6',],],
+     *   ],
+     * ]
+     * output: [
+     *   'name'                     => '浜松太郎',
+     *   'checkbox1[]'              => [0 => '1', 1 => '3', 2 => '5',],
+     *   'families[0][name]'        => '静岡太郎',
+     *   'families[0][checkbox1][]' => [0 => '2', 1 => '5',],
+     *   'families[3][checkbox1][]' => '6',
+     *  ]
+     *
+     * </pre>
+     * @see https://qiita.com/puchida/items/e582488dc0a087c4bfcf
+     * @param array|string|int|float $requests 呼出し時は配列。再帰時は string, int, float も
+     * @param array                  $ret      再帰で使う場所。呼出し時は無視で問題なし
+     * @param array                  $keys     再帰で使う場所。呼出し時は無視で問題なし
+     * @param string|null            $key      再帰で使う場所。呼出し時は無視で問題なし
+     * @return array
+     */
+    function request_arr_to_html_input_arr($requests, array $ret = [], array $keys = [], string $key = null): array
+    {
+        if ($key !== null) {
+            // 配列のキーに使う文字列を追加。一番最初に呼び出された時だけ $key === null
+            $keys[] = $key;
+        }
+        if (! is_array($requests)) {
+            // 貯まった文字列を結合してキーにして、配列に値を追加
+            // ex.
+            // <input type="text" name="hoge[fuga][]" value="foo"> とあったら、この時点で
+            // $keys === ['hoge', '[fuga]', '[]'] && $requests === 'foo'
+            // が成り立つ値が変数に格納されている
+            $inputName = implode('', $keys);
+            if (! isset($ret[$inputName])) {
+                // まだ入れる場所が未定義ならばとりあえずそのまま入れる
+                $ret[$inputName] = $requests;
+            } else {
+                // 重複による上書きを避けるために一次元配列にまとめる
+                if (! is_array($ret[$inputName])) {
+                    // まだ配列化していないならば配列化
+                    $ret[$inputName] = [$ret[$inputName], $requests];
+                } else {
+                    // 配列化済みならば追加
+                    $ret[$inputName][] = $requests;
+                }
+            }
+
+            return $ret;
+        }
+
+        // 配列が続いている場合、再帰でキーを連鎖させていく
+        if ($requests === [] || (array_keys($requests) === range(0, count($requests) - 1))) {
+            // 配列の添え字が 0, 1, 2,... と連番の場合
+            foreach ($requests as $i => $v) {
+                if (! is_array($v)) {
+                    // 配列 input の末尾をループしているので [] をつける
+                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, '[]');
+                } else {
+                    // まだ続きがあるので [${添え字]] をつける
+                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, '['.$i.']');
+                }
+            }
+        } else {
+            // 配列が連想配列の場合
+            if (empty($keys)) {
+                // $keys が空ならばトップレベルなので現在のキーをそのまま渡す
+                foreach ($requests as $k => $v) {
+                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, $k);
+                }
+            } else {
+                // $keys が空でないならばネスト中の連想配列なので現在のキーを [] でくくって渡す
+                foreach ($requests as $k => $v) {
+                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, '['.$k.']');
+                }
+            }
+        }
+
+        return $ret;
+    }
+}
