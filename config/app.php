@@ -41,7 +41,8 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', false),
+    'debug'          => env('APP_DEBUG', false),
+    'debug_datetime' => env('APP_DEBUG_DATETIME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -178,6 +179,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\CarbonServiceProvider::class,
+        App\Providers\MailEchoSmtpLogServiceProvider::class,
     ],
 
     /*

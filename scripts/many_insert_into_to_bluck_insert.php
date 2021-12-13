@@ -33,7 +33,7 @@ function replaceSql(string $srcFilePath)
 function main()
 {
     foreach(
-        glob('D:\PhpstormProjects\_CPOINTLAB\新しいフォルダー\_MYSQL_STORE\*.sql')
+        glob('D:\_MYSQL_STORE\*.sql')
         as
         $path
     ){

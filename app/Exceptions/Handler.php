@@ -3,16 +3,17 @@
 namespace App\Exceptions;
 
 use App\Http\HttpStatus;
-use App\Library\SQLFormatter\SqlFormatter;
 use App\Models\Eloquents\BaseEloquent;
 use Arr;
+use Auth;
 use DB;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use JsonException;
-use Log;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -38,56 +39,60 @@ class Handler extends ExceptionHandler
 
     /**
      * Render an exception into an HTTP response.
-     * @param              $request
-     * @param  \Throwable  $e
-     * @return Response
+     *
+     * @param  Request       $request
+     * @param  Exception     $exception
      * @throws JsonException
      * @throws \Throwable
+     * @return Response
      */
-    public function render($request, \Throwable $e): Response
+    public function render($request, \Throwable $exception): Response
     {
-        if ($e instanceof ValidationException) {
+        if ($exception instanceof ValidationException) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => implode("\n", Arr::flatten($e->validator->getMessageBag()->toArray())),
+                    'message' => implode("\n", Arr::flatten($exception->validator->getMessageBag()->toArray())),
                     'body'    => [
-                        'errors' => $e->validator->getMessageBag()->toArray(),
+                        'errors' => $exception->validator->getMessageBag()->toArray(),
                     ],
                 ],
                 HttpStatus::UNPROCESSABLE_ENTITY
             );
         }
-        if ($e instanceof ValidationLikeException) {
+        if ($exception instanceof ValidationLikeException) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => $exception->getMessage(),
                 ],
                 HttpStatus::UNPROCESSABLE_ENTITY
             );
         }
 
-        if ($e instanceof ModelNotFoundException) {
-            $e = $this->handleModelNotFoundException($e);
+        if ($exception instanceof ModelNotFoundException) {
+            $exception = $this->handleModelNotFoundException($exception);
         }
 
-        $response = parent::render($request, $e);
-        ($response instanceof JsonResponse) && $this->setQueryLogToJsonResponse($response);
+        $response = parent::render($request, $exception);
+        (config('app.env') !== config('app.in_production_env_name'))
+        && ($response instanceof JsonResponse)
+        && $this->setQueryLogToJsonResponse($response);
 
         if ($response->getStatusCode() === HttpStatus::INTERNAL_SERVER_ERROR) {
-            Log::channel('develop_slack')->error(json_encode(
-                [
-                 'url'      => $request->url(),
-                 'params'   => $request->all(),
-                 'queryLog' => SqlFormatter::formatFromDBGetQueryLog(DB::getQueryLog()),
-                ],
-                JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT
-            ));
-            Log::channel('develop_slack')->error($e);
-            $content = $response->getContent();
-            foreach (str_split($content, 5000) as $unit) {
-                Log::channel('develop_slack')->error($unit);
+            $logger = dev_slack_log();
+            $logger->error('ERROR in '.$request->url());
+            $logger->error(implode("\n", [
+                'LOGIN_INFO',
+                'web: '.Auth::guard('web')->id(),
+                'admin_web: '.Auth::guard('admin_web')->id(),
+            ]));
+            $logger->error($exception);
+            if ($response instanceof JsonResponse) {
+                $content = $response->getContent();
+                foreach (str_split($content, 5000) as $unit) {
+                    $logger->error($unit);
+                }
             }
         }
 

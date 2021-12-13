@@ -3,8 +3,11 @@
 namespace App\Models\Eloquents;
 
 use App\Http\Presenters\SelectOptionsPresenter;
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Scope;
 use Str;
 
 /**
@@ -15,6 +18,8 @@ use Str;
  */
 abstract class BaseEloquent extends Model
 {
+    use BulkInsert;
+
     /** このクラスの名前。外部に見せる等で日本語を想定 */
     public static function getNaturalLanguageName(): string
     {
@@ -22,8 +27,8 @@ abstract class BaseEloquent extends Model
         $table      = $connection->getTablePrefix().(new static())->getTable();
 
         return $connection->getDoctrineSchemaManager()
-                ->listTableDetails($table)
-                ->getComment() ?: class_basename(static::class);
+            ->listTableDetails($table)
+            ->getComment() ?: class_basename(static::class);
     }
 
     /**
@@ -52,31 +57,55 @@ abstract class BaseEloquent extends Model
      * HasManyThroughの引数割り当ての誤りっぷりがひどいので作成
      * @param  string         $tgtClass                       関係先テーブルクラス
      * @param  string         $throughClass                   通る中間テーブルクラス
-     * @param  string         $throughHasThisPrimaryKeyColumn 中間テーブルの持つ$thisの主キーを指すカラム
-     * @param  string         $throughHasTgtPrimaryKeyColumn  中間テーブルの持つ関係先の主キーを指すカラム
+     * @param  string|null    $throughHasThisPrimaryKeyColumn 中間テーブルの持つ$thisの主キーを指すカラム
+     * @param  string|null    $throughHasTgtPrimaryKeyColumn  中間テーブルの持つ関係先の主キーを指すカラム
      * @return HasManyThrough
      */
     public function hasManyThroughEasyWrapper(
         string $tgtClass,
         string $throughClass,
-        string $throughHasThisPrimaryKeyColumn,
-        string $throughHasTgtPrimaryKeyColumn
+        ?string $throughHasThisPrimaryKeyColumn = null,
+        ?string $throughHasTgtPrimaryKeyColumn = null
     ): HasManyThrough {
         return $this->hasManyThrough(
             $tgtClass,
             $throughClass,
-            $throughHasThisPrimaryKeyColumn,
+            $throughHasThisPrimaryKeyColumn ?? $this->getKeyName(),
             (new $tgtClass())->getKeyName(),
             $this->getKeyName(),
-            $throughHasTgtPrimaryKeyColumn,
+            $throughHasTgtPrimaryKeyColumn ?? (new $tgtClass())->getKeyName(),
+        );
+    }
+
+    /**
+     * HasOneThroughの引数割り当ての誤りっぷりがひどいので作成
+     * @param  string        $tgtClass                       関係先テーブルクラス
+     * @param  string        $throughClass                   通る中間テーブルクラス
+     * @param  string|null   $throughHasThisPrimaryKeyColumn 中間テーブルの持つ$thisの主キーを指すカラム
+     * @param  string|null   $throughHasTgtPrimaryKeyColumn  中間テーブルの持つ関係先の主キーを指すカラム
+     * @return HasOneThrough
+     */
+    public function hasOneThroughEasyWrapper(
+        string $tgtClass,
+        string $throughClass,
+        ?string $throughHasThisPrimaryKeyColumn = null,
+        ?string $throughHasTgtPrimaryKeyColumn = null
+    ): HasOneThrough {
+        return $this->hasOneThrough(
+            $tgtClass,
+            $throughClass,
+            $throughHasThisPrimaryKeyColumn ?? $this->getKeyName(),
+            (new $tgtClass())->getKeyName(),
+            $this->getKeyName(),
+            $throughHasTgtPrimaryKeyColumn ?? (new $tgtClass())->getKeyName(),
         );
     }
 
     /**
      * モデルを新しい、既存ではないインスタンスにクローンします。
      *
-     * @param  array|null $except
-     * @return static
+     * @param  array|null                               $except
+     * @return \App\Models\Eloquents\Event\Order\static
      */
     public function replicate(array $except = null): self
     {
@@ -110,11 +139,11 @@ abstract class BaseEloquent extends Model
 
     /**
      * HasManyThrough で使っているリレーションをまとめて更新するメソッド
-     * @param  HasManyThrough       $hasManyThrough      Eloquentの多対多リレーションを表現したクラス
-     * @param  array                $newThroughTgtIds    更新後のhasManyThroughで参照しているキー全て
-     * @param  string|string[]|null $reloadRelationNames
+     * @param HasManyThrough       $hasManyThrough      Eloquentの多対多リレーションを表現したクラス
+     * @param array                $newThroughTgtIds    更新後のhasManyThroughで参照しているキー全て
+     * @param string|string[]|null $reloadRelationNames
      */
-    public function updateHasManyThroughRelations(HasManyThrough $hasManyThrough, array $newThroughTgtIds, $reloadRelationNames=null): void
+    public function updateHasManyThroughRelations(HasManyThrough $hasManyThrough, array $newThroughTgtIds, array | string $reloadRelationNames=null): void
     {
         $throughModel                        = $hasManyThrough->getParent();
         $thisKeyInThroughModel               = $hasManyThrough->getFirstKeyName();
@@ -143,5 +172,28 @@ abstract class BaseEloquent extends Model
         // $thisがリレーションを既にロード済みの場合、データベースを変更してもリレーションが変更されません。
         // load メソッドで明示的にリレーションをロードすることで再読み込みしてリレーションをデータベースに即した形にできます。
         $reloadRelationNames && $this->load($reloadRelationNames);
+    }
+
+    public static function removeGlobalScope($scope): void
+    {
+        if (is_string($scope)) {
+            unset(static::$globalScopes[static::class][$scope]);
+
+            return;
+        }
+
+        if ($scope instanceof Closure) {
+            unset(static::$globalScopes[static::class][spl_object_hash($scope)]);
+
+            return;
+        }
+
+        if ($scope instanceof Scope) {
+            unset(static::$globalScopes[static::class][get_class($scope)]);
+
+            return;
+        }
+
+        throw new \InvalidArgumentException('Global scope must be an instance of Closure or Scope.');
     }
 }

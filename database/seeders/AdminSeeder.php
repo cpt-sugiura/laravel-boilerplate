@@ -8,7 +8,7 @@ class AdminSeeder extends BaseSeeder
 {
     public function run(): void
     {
-        if (!Admin::query()->whereEmail('admin@example.com')->exists()) {
+        if (! Admin::query()->whereEmail('admin@example.com')->exists()) {
             $admin           = new Admin();
             $admin->name     = 'テスト管理者';
             $admin->email    = 'admin@example.com';

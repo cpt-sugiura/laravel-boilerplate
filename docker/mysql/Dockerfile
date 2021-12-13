@@ -1,5 +1,4 @@
-ARG MYSQL_VERSION=latest
-FROM mysql:${MYSQL_VERSION}
+FROM mysql:8.0
 
 #####################################
 # Set Timezone

@@ -28,7 +28,7 @@ if (! function_exists('bounden_sql')) {
      * @param  Builder $query
      * @return string
      */
-    function bounden_sql(Builder $query)
+    function bounden_sql(Builder $query): string
     {
         return Str::replaceArray(
             '?',
@@ -41,11 +41,11 @@ if (! function_exists('bounden_sql')) {
 if (! function_exists('fread_head')) {
     /**
      * ファイルを先頭から$lines行読み込む
-     * @param  string $filename
-     * @param  int    $lines
+     * @param  string  $filename
+     * @param  int     $lines
      * @return string
      */
-    function fread_head($filename, $lines = 25)
+    function fread_head(string $filename, int $lines = 25): string
     {
         $f   = fopen($filename, 'rb');
         $txt = '';
@@ -63,12 +63,12 @@ if (! function_exists('fread_tail')) {
     /**
      * ファイルを末尾から$lines行分読み込む
      * @see https://www.geekality.net/2011/05/28/php-tail-tackling-large-files/
-     * @param  string      $filename
-     * @param  int         $lines
-     * @param  int         $buffer
-     * @return bool|string
+     * @param  string  $filename
+     * @param  int     $lines
+     * @param  int     $buffer
+     * @return string
      */
-    function fread_tail($filename, $lines = 50, $buffer = 4096)
+    function fread_tail(string $filename, int $lines = 50, int $buffer = 4096): string
     {
         // Open the file
         $file = fopen($filename, 'rb');
@@ -121,17 +121,17 @@ if (! function_exists('array_in_str')) {
      * 文字列$str中に$needlesに含まれる文字列のいずれかが存在するか否かを判定する関数
      * 存在するならばtrue, 存在しないならばfalse
      *
-     * @param  string       $str
-     * @param  array|string $needles
+     * @param  string        $str
+     * @param  array|string  $needles
      * @return bool
      */
-    function array_in_str(string $str, $needles): bool
+    function array_in_str(string $str, array|string $needles): bool
     {
         if (! is_array($needles)) {
-            return strpos($str, (string) $needles) !== false;
+            return str_contains($str, (string)$needles);
         }
         foreach ($needles as $needle) {
-            if (strpos($str, $needle) !== false) {
+            if (str_contains($str, $needle)) {
                 return true;
             }
         }
@@ -147,7 +147,7 @@ if (! function_exists('array_key_camel')) {
      * @param  bool  $isRecursive
      * @return array
      */
-    function array_key_camel(array $array, bool $isRecursive = true)
+    function array_key_camel(array $array, bool $isRecursive = true): array
     {
         $results = [];
         foreach ($array as $key => $value) {
@@ -168,7 +168,7 @@ if (! function_exists('array_key_snake')) {
      * @param  bool  $isRecursive
      * @return array
      */
-    function array_key_snake(array $array, bool $isRecursive = true)
+    function array_key_snake(array $array, bool $isRecursive = true): array
     {
         $results = [];
         foreach ($array as $key => $value) {
@@ -190,7 +190,7 @@ if (! function_exists('array_key_add_prefix')) {
      * @param  bool   $isRecursive
      * @return array
      */
-    function array_key_add_prefix(string $prefix, array $array, bool $isRecursive = false)
+    function array_key_add_prefix(string $prefix, array $array, bool $isRecursive = false): array
     {
         $results = [];
         foreach ($array as $key => $value) {
@@ -208,13 +208,13 @@ if (! function_exists('before_insert_required_rule')) {
     /**
      * バリデーションルールを表現する配列ないし文字列にrequiredルールを追加する.
      * nullableが定義されている場合は追加をしない
-     * @param  array|string $rule
+     * @param  array|string  $rule
      * @return array|string
      */
-    function before_insert_required_rule($rule): array|string
+    function before_insert_required_rule(array|string $rule): array|string
     {
         /* @var string|array $rule */
-        if (is_string($rule) && strpos($rule, 'nullable') === false) {
+        if (is_string($rule) && !str_contains($rule, 'nullable')) {
             $rule = 'required|'.$rule;
         } elseif (is_array($rule) && ! in_array('nullable', $rule, true)) {
             $rule = array_merge(['required'], $rule);
@@ -232,7 +232,7 @@ if (! function_exists('loose_secure_asset')) {
      * @param  string $path
      * @return string
      */
-    function loose_secure_asset(string $path)
+    function loose_secure_asset(string $path): string
     {
         if (Request::isSecure() || config('app.env') === config('app.in_production_env_name')) {
             return asset($path, true);
@@ -251,14 +251,14 @@ if (! function_exists('fast_array_random')) {
 if (! function_exists('mb_wordwrap')) {
     /**
      * 日本語対応wordwrap. 指定した文字数で文字列を分割する。行の最大長を決めて整形することを目的に作成。
-     * @param  string $str                 入力文字列。分割対象の文字列。
-     * @param  int    $width               文字列を分割するときの文字数。新しい一行の長さ。
-     * @param  string $break               分割に用いる文字。改行文字。
-     * @param  string $originalDeliminator 元々分割に用いていた文字。改行文字。
+     * @param  string  $str                  入力文字列。分割対象の文字列。
+     * @param  int     $width                文字列を分割するときの文字数。新しい一行の長さ。
+     * @param  string  $break                分割に用いる文字。改行文字。
+     * @param  string  $originalDeliminator  元々分割に用いていた文字。改行文字。
      * @return string 受け取った文字列を指定した長さで分割したものを返します
      * @see wordwrap()
      */
-    function mb_wordwrap(string $str, $width = 25, $break = "\n", $originalDeliminator = "\n")
+    function mb_wordwrap(string $str, int $width = 25, string $break = "\n", string $originalDeliminator = "\n"): string
     {
         $result = '';
         $rows   = explode($originalDeliminator, $str);
@@ -343,69 +343,75 @@ if (! function_exists('request_arr_to_html_input_arr')) {
      *
      * </pre>
      * @see https://qiita.com/puchida/items/e582488dc0a087c4bfcf
-     * @param array|string|int|float $requests 呼出し時は配列。再帰時は string, int, float も
-     * @param array                  $ret      再帰で使う場所。呼出し時は無視で問題なし
-     * @param array                  $keys     再帰で使う場所。呼出し時は無視で問題なし
-     * @param string|null            $key      再帰で使う場所。呼出し時は無視で問題なし
+     * @param  array  $requests  呼出し時は配列
      * @return array
      */
-    function request_arr_to_html_input_arr($requests, array $ret = [], array $keys = [], string $key = null): array
+    function request_arr_to_html_input_arr(array $requests): array
     {
-        if ($key !== null) {
-            // 配列のキーに使う文字列を追加。一番最初に呼び出された時だけ $key === null
-            $keys[] = $key;
-        }
-        if (! is_array($requests)) {
-            // 貯まった文字列を結合してキーにして、配列に値を追加
-            // ex.
-            // <input type="text" name="hoge[fuga][]" value="foo"> とあったら、この時点で
-            // $keys === ['hoge', '[fuga]', '[]'] && $requests === 'foo'
-            // が成り立つ値が変数に格納されている
-            $inputName = implode('', $keys);
-            if (! isset($ret[$inputName])) {
-                // まだ入れる場所が未定義ならばとりあえずそのまま入れる
-                $ret[$inputName] = $requests;
-            } else {
-                // 重複による上書きを避けるために一次元配列にまとめる
-                if (! is_array($ret[$inputName])) {
-                    // まだ配列化していないならば配列化
-                    $ret[$inputName] = [$ret[$inputName], $requests];
+        $request_arr_to_html_input_arr_body = static function(
+            float|array|int|string $requests,
+            array $ret = [],
+            array $keys = [],
+            string $key = null
+        ) use (&$request_arr_to_html_input_arr_body) {
+            if($key !== null) {
+                // 配列のキーに使う文字列を追加。一番最初に呼び出された時だけ $key === null
+                $keys[] = $key;
+            }
+            if(!is_array($requests)) {
+                // 貯まった文字列を結合してキーにして、配列に値を追加
+                // ex.
+                // <input type="text" name="hoge[fuga][]" value="foo"> とあったら、この時点で
+                // $keys === ['hoge', '[fuga]', '[]'] && $requests === 'foo'
+                // が成り立つ値が変数に格納されている
+                $inputName = implode('', $keys);
+                if(!isset($ret[$inputName])) {
+                    // まだ入れる場所が未定義ならばとりあえずそのまま入れる
+                    $ret[$inputName] = $requests;
                 } else {
-                    // 配列化済みならば追加
-                    $ret[$inputName][] = $requests;
+                    // 重複による上書きを避けるために一次元配列にまとめる
+                    if(!is_array($ret[$inputName])) {
+                        // まだ配列化していないならば配列化
+                        $ret[$inputName] = [$ret[$inputName], $requests];
+                    } else {
+                        // 配列化済みならば追加
+                        $ret[$inputName][] = $requests;
+                    }
+                }
+
+                return $ret;
+            }
+
+            // 配列が続いている場合、再帰でキーを連鎖させていく
+            if($requests === [] || (array_keys($requests) === range(0, count($requests) - 1))) {
+                // 配列の添え字が 0, 1, 2,... と連番の場合
+                foreach($requests as $i => $v) {
+                    if(!is_array($v)) {
+                        // 配列 input の末尾をループしているので [] をつける
+                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '[]');
+                    } else {
+                        // まだ続きがあるので [${添え字]] をつける
+                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '[' . $i . ']');
+                    }
+                }
+            } else {
+                // 配列が連想配列の場合
+                if(empty($keys)) {
+                    // $keys が空ならばトップレベルなので現在のキーをそのまま渡す
+                    foreach($requests as $k => $v) {
+                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, $k);
+                    }
+                } else {
+                    // $keys が空でないならばネスト中の連想配列なので現在のキーを [] でくくって渡す
+                    foreach($requests as $k => $v) {
+                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '[' . $k . ']');
+                    }
                 }
             }
 
             return $ret;
-        }
+        };
 
-        // 配列が続いている場合、再帰でキーを連鎖させていく
-        if ($requests === [] || (array_keys($requests) === range(0, count($requests) - 1))) {
-            // 配列の添え字が 0, 1, 2,... と連番の場合
-            foreach ($requests as $i => $v) {
-                if (! is_array($v)) {
-                    // 配列 input の末尾をループしているので [] をつける
-                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, '[]');
-                } else {
-                    // まだ続きがあるので [${添え字]] をつける
-                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, '['.$i.']');
-                }
-            }
-        } else {
-            // 配列が連想配列の場合
-            if (empty($keys)) {
-                // $keys が空ならばトップレベルなので現在のキーをそのまま渡す
-                foreach ($requests as $k => $v) {
-                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, $k);
-                }
-            } else {
-                // $keys が空でないならばネスト中の連想配列なので現在のキーを [] でくくって渡す
-                foreach ($requests as $k => $v) {
-                    $ret = request_arr_to_html_input_arr($v, $ret, $keys, '['.$k.']');
-                }
-            }
-        }
-
-        return $ret;
+        return $request_arr_to_html_input_arr_body($requests);
     }
 }

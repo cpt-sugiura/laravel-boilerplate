@@ -39,12 +39,21 @@ class SearchWhereMacro
     public static function isNull(string $column): callable
     {
         return static function ($query, $value) use ($column) {
-            return $query->where(
-                static function ($query) use ($column, $value) {
-                    /* @var Builder $query */
-                    return $value ? $query->whereNull($column) : $query;
-                }
-            );
+            /* @var Builder $query */
+            return $value ? $query->whereNull($column) : $query;
+        };
+    }
+
+    /**
+     * WHERE ${column} is not null
+     * @param  string  $column
+     * @return Closure
+     */
+    public static function isNotNull(string $column): callable
+    {
+        return static function ($query, $value) use ($column) {
+            /* @var Builder $query */
+            return $value ? $query->whereNotNull($column) : $query;
         };
     }
 
@@ -129,6 +138,7 @@ class SearchWhereMacro
     }
 
     /**
+     * 部分一致検索
      * WHERE ${column} like %${value}%
      * @param  string  $column
      * @return Closure
@@ -137,7 +147,13 @@ class SearchWhereMacro
     {
         return static function ($query, $value) use ($column) {
             /* @var Builder $query */
-            return $query->where($column, 'like', '%'.preg_replace('/([\\\\_%])/', '\\\\$1', $value).'%');
+            return $query->where(static function ($query) use ($column, $value) {
+                foreach (self::explodeSearchText($value) as $v) {
+                    $query->where($column, 'like', '%'.preg_replace('/([\\\\_%])/', '\\\\$1', $v).'%');
+                }
+
+                return $query;
+            });
         };
     }
 
@@ -171,9 +187,57 @@ class SearchWhereMacro
     public static function fullTextSearch(array $columns): callable
     {
         return static function ($query, $value) use ($columns) {
-            $columnsStr = implode(',', $columns);
+            $charList   = [];
+            $charsList  = [];
+            foreach (self::explodeSearchText($value) as $str) {
+                mb_strlen($str) === 1
+                    ? ($charList[] = $str)
+                    : ($charsList[] = "+{$str}");
+            }
             /* @var Builder $query */
-            return $query->whereRaw("MATCH({$columnsStr}) AGAINST(? IN BOOLEAN MODE)", [$value]);
+            return $query->where(static function ($query) use ($charsList, $charList, $columns) {
+                foreach ($charList as $c) {
+                    $query = self::freeWord($columns)($query, $c);
+                }
+                if (count($charsList) === 0) {
+                    return $query;
+                }
+
+                $columnsStr = implode(',', $columns);
+                /* @var Builder $query */
+                return $query->whereRaw("MATCH({$columnsStr}) AGAINST(? IN BOOLEAN MODE)", [implode(' ', $charsList)]);
+            });
+        };
+    }
+
+    /**
+     * 全角半角問わず空白で文字列を分割
+     * @param  int|string $value
+     * @return array
+     */
+    private static function explodeSearchText(int | string $value): array
+    {
+        $value = (string) $value;
+        $value = str_replace('　', ' ', $value);
+        $value = trim($value);
+        $value = preg_replace('/\s+/', ' ', $value);
+
+        return explode(' ', $value);
+    }
+
+    public static function dayOfWeek($column): callable
+    {
+        return static function ($query, $value) use ($column) {
+            /* @var Builder $query */
+            return $query->where(\DB::raw("DAYOFWEEK({$column})"), '=', $value);
+        };
+    }
+
+    public static function hourMinute($column): callable
+    {
+        return static function ($query, $value) use ($column) {
+            /* @var Builder $query */
+            return $query->where(\DB::raw("TIME_FORMAT({$column}, '%H:%i')"), '=', $value);
         };
     }
 }

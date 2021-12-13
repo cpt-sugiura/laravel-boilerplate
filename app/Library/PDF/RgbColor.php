@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Library\PDF;
-
 
 class RgbColor
 {
@@ -23,7 +21,7 @@ class RgbColor
         $this->b = $b;
     }
 
-    public function forFpdiArray():array
+    public function forFpdiArray(): array
     {
         return [$this->r, $this->g, $this->b];
     }

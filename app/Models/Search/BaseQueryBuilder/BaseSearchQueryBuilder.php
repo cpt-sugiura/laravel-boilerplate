@@ -7,6 +7,8 @@ use App\Models\Search\BaseQueryBuilder\Abstracts\SearchableWhereContract;
 use App\Models\Search\BaseQueryBuilder\Abstracts\SearchOrderBy;
 use App\Models\Search\BaseQueryBuilder\Abstracts\SearchWhere;
 use Closure;
+use DateTimeInterface;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
@@ -19,6 +21,8 @@ abstract class BaseSearchQueryBuilder
      * @var Builder
      */
     public Builder $query;
+    /** 検索のデフォルト値として扱う */
+    private SearchRequestContract $searchRequestDefault;
 
     /**
      * BaseSearchService constructor.
@@ -53,7 +57,7 @@ abstract class BaseSearchQueryBuilder
      *
      * SearchWhereMacro クラスによく使う少し特殊な WHERE 句のクロージャを返す静的メソッド群が配置してあります。
      * @return array<SearchableWhereContract|string|Expression|array<string|Expression>|callable>
-     *@see \App\Models\Search\BaseQueryBuilder\Macros\SearchWhereMacro
+     * @see \App\Models\Search\BaseQueryBuilder\Macros\SearchWhereMacro
      */
     abstract protected function searchableWhereFields(): array;
 
@@ -80,12 +84,15 @@ abstract class BaseSearchQueryBuilder
      *     $search = ['name' => 'hoge', 'updatedAtStart' => new Carbon('2020-01-04')];
      *     $orderBy = ['updatedAt' => 'desc', 'name' => 'asc'];
      *
-     * @param  array         $search
-     * @param  string|array  $orderBy
+     * @param  array|null             $search
+     * @param  array|string|null      $orderBy
      * @return BaseSearchQueryBuilder
      */
-    public function search(array $search = [], $orderBy = []): self
+    public function search(?array $search = null, null | array | string $orderBy = null): self
     {
+        $search ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getSearch() : [];
+        $orderBy ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getOrderBy() : [];
+
         $this->query->select($this->select());
         $this->buildSearchWhere($search);
         if ($orderBy !== null) {
@@ -124,10 +131,10 @@ abstract class BaseSearchQueryBuilder
     }
 
     /**
-     * @param  array|string  $orderBy
+     * @param  array|string $orderBy
      * @return Builder
      */
-    protected function buildSearchOrderBy(array|string $orderBy): Builder
+    protected function buildSearchOrderBy(array | string $orderBy): Builder
     {
         if (is_string($orderBy)) {
             $orderBy = [$orderBy => 'asc'];
@@ -151,57 +158,95 @@ abstract class BaseSearchQueryBuilder
 
     /**
      * 検索結果をいい感じの構造体にする
-     * @param  object  $searchResultItem
+     * @param  object       $searchResultItem
      * @return object|array
      */
-    protected function formatter(object $searchResultItem)
+    protected function formatter(object $searchResultItem): object | array
     {
+        foreach (get_object_vars($searchResultItem) as $property => $v) {
+            $date = date_create_from_format('Y-m-d H:i:s', $searchResultItem->$property, )
+                ?: date_create_from_format('Y-m-d', $searchResultItem->$property);
+            if ($date instanceof \DateTime) {
+                $searchResultItem->$property = $date->format(DateTimeInterface::ATOM);
+            }
+        }
+
         return $searchResultItem;
     }
 
     /**
      * 検索結果全取得のラッパー。構造体への変換フォーマットを使う
-     * @param  string[]  $columns
+     * @param  string[]   $columns
      * @return Collection
      */
-    public function get($columns = ['*']): Collection
+    public function get(array $columns = ['*']): Collection
     {
         return $this->query->get($columns)
-            ->map(fn($item)=>$this->formatter($item));
+            ->map(fn ($item) => $this->formatter($item));
     }
 
     /**
      * ページネーションのラッパー。構造体への変換フォーマットを使う
-     * @param  int       $perPage
-     * @param  string[]  $columns
-     * @param  string    $pageName
-     * @param  null      $page
+     * @param  int|null                                              $perPage  デフォルトは 15
+     * @param  string[]                                              $columns
+     * @param  string                                                $pageName
+     * @param  null                                                  $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function paginate(int | null $perPage = null, array $columns = null, string $pageName = 'pages', $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
+        $columns ??= $this->select() ?? ['*'];
+        $perPage ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getPerPage() : 15;
+        $page ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getPage() : null;
+        if (! isset($page)) {
+            try {
+                $page = request()->page;
+            } catch (BindingResolutionException $e) {
+                // コンソールで呼ばれた場合にありうる。この場合は握りつぶす
+            }
+        }
+
         /** @var LengthAwarePaginator $paginate */
-        $paginate = $this->query->paginate($perPage, $columns , $pageName, $page );
-        $items = collect($paginate->items())->map(fn($item)=>$this->formatter($item));
+        $paginate = $this->query->paginate($perPage, $columns, $pageName, $page);
+        $items    = collect($paginate->items())->map(fn ($item) => $this->formatter($item));
         $paginate->setCollection($items);
 
         return $paginate;
     }
+
     /**
      * 総数抜きページネーションのラッパー。構造体への変換フォーマットを使う
-     * @param  int       $perPage
+     * @param  int|null  $perPage  デフォルトは 15
      * @param  string[]  $columns
      * @param  string    $pageName
      * @param  null      $page
      * @return Paginator
      */
-    public function simplePaginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null): Paginator
+    public function simplePaginate(int | null $perPage = null, ?array $columns = null, string $pageName = 'pages', $page = null): Paginator
     {
+        $columns ??= $this->select();
+        $perPage ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getPerPage() : 15;
+        $page ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getPage() : null;
+        if (! isset($page)) {
+            try {
+                $page = request()->page;
+            } catch (BindingResolutionException $e) {
+                // コンソールで呼ばれた場合にありうる。この場合は握りつぶす
+            }
+        }
+
         /** @var LengthAwarePaginator $paginate */
-        $paginate = $this->query->simplePaginate($perPage, $columns , $pageName, $page );
-        $items = collect($paginate->items())->map(fn($item)=>$this->formatter($item));
+        $paginate = $this->query->simplePaginate($perPage, $columns, $pageName, $page);
+        $items    = collect($paginate->items())->map(fn ($item) => $this->formatter($item));
         $paginate->setCollection($items);
 
         return $paginate;
+    }
+
+    public function setSearchRequestAsDefault(SearchRequestContract $searchRequestContract): static
+    {
+        $this->searchRequestDefault = $searchRequestContract;
+
+        return $this;
     }
 }

@@ -1,6 +1,4 @@
-# for nginx
-#FROM php:8.0-fpm-buster
-# for apache
+FROM node:16-buster as node
 FROM php:8.0-apache-buster
 SHELL ["/bin/bash", "-oeux", "pipefail", "-c"]
 
@@ -20,7 +18,7 @@ RUN apt-get update && \
   locale-gen en_US.UTF-8 && \
   localedef -f UTF-8 -i en_US en_US.UTF-8 && \
   mkdir /var/run/php-fpm
-RUN  docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 # php-ext-install
 RUN docker-php-ext-install \
         gd \
@@ -30,8 +28,6 @@ RUN docker-php-ext-install \
         mbstring \
         zip \
         bcmath
-# for firebase
-RUN pecl install grpc
 # for php-ext-imagick
 RUN apt-get update && apt-get -y install --no-install-recommends libmagickwand-dev imagemagick \
   && mkdir /tmp/imagick \
@@ -43,9 +39,21 @@ RUN apt-get update && apt-get -y install --no-install-recommends libmagickwand-d
   && rm -rf /tmp/imagick \
   && docker-php-ext-enable imagick
 
-RUN  composer config -g process-timeout 3600
+RUN composer config -g process-timeout 3600
 
-COPY ./php-fpm.d/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
+ENV APACHE_DOCUMENT_ROOT /work/backend/public
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+ && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
+ && a2enmod rewrite
+
 COPY ./php.ini /usr/local/etc/php/php.ini
+
+# node command
+COPY --from=node /usr/local/bin /usr/local/bin
+# npm command
+COPY --from=node /usr/local/lib /usr/local/lib
+# yarn command
+COPY --from=node /opt /opt
 
 WORKDIR /work/backend

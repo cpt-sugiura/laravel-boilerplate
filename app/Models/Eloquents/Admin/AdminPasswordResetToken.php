@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Models\Eloquents;
+namespace App\Models\Eloquents\Admin;
 
 use App\Models\Eloquents\BaseEloquent as Model;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,7 +28,7 @@ class AdminPasswordResetToken extends Model
 
     public $fillable = [
         'email',
-        'token'
+        'token',
     ];
 
     /**
@@ -39,6 +38,6 @@ class AdminPasswordResetToken extends Model
      */
     protected $casts = [
         'email' => 'string',
-        'token' => 'string'
+        'token' => 'string',
     ];
 }

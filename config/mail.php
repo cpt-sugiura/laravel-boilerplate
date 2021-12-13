@@ -58,7 +58,7 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name'    => env('MAIL_FROM_NAME', 'Example'),
     ],
-
+    'return-path' => env('MAIL_RETURN_PATH', 'hello@example.com'),
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol
@@ -131,4 +131,8 @@ return [
     */
 
     'log_channel' => env('MAIL_LOG_CHANNEL'),
+
+    'admin' => [
+        'email_address' => env('MAIL_ADMIN_ADDRESS')
+    ]
 ];

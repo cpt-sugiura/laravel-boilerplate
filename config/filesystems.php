@@ -49,6 +49,10 @@ return [
             'driver' => 'local',
             'root'   => storage_path('app'),
         ],
+        'root' => [
+            'driver' => 'local',
+            'root'   => storage_path(''),
+        ],
         'tmp' => [
             'driver' => 'local',
             'root'   => '/tmp/'.env('APP_NAME'),

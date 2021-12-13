@@ -71,7 +71,7 @@ return [
             'driver'     => 'daily',
             'path'       => storage_path('logs/laravel-'.$__current_process_user.'.log'),
             'level'      => 'debug',
-            'days'       => 14,
+            'days'       => 30,
             'permission' => 0664,
         ],
 

@@ -32,7 +32,7 @@ class SearchWhere implements SearchableWhereContract
     {
         if (is_string($where) || $where instanceof Expression) {
             $this->whereClosure = static function ($query, $value) use ($where) {
-                if(!is_string($value) && !is_numeric($value)){
+                if (! is_string($value) && ! is_numeric($value)) {
                     return $query;
                 }
                 /* @var Builder $query */
@@ -40,7 +40,7 @@ class SearchWhere implements SearchableWhereContract
             };
         } elseif (is_array($where)) {
             $this->whereClosure = static function ($query, $value) use ($where) {
-                if(!is_string($value) && !is_numeric($value)){
+                if (! is_string($value) && ! is_numeric($value)) {
                     return $query;
                 }
                 /* @var Builder $query */

@@ -2,8 +2,8 @@
 
 namespace App\Models\Eloquents\Admin;
 
-use App\Library\Notifications\AdminPasswordResetNotification;
 use App\Models\Eloquents\BaseEloquent as Model;
+use App\Models\Eloquents\Traits\HasRules;
 use Auth;
 use Eloquent;
 use Illuminate\Auth\Authenticatable;
@@ -53,6 +53,7 @@ use Str;
  */
 class Admin extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
+    use HasRules;
     use Authenticatable;
     use Authorizable;
     use CanResetPassword;
@@ -100,22 +101,19 @@ class Admin extends Model implements AuthenticatableContract, AuthorizableContra
         'name'                        => 'string',
         'email'                       => 'string',
         'password'                    => 'string',
-        'remember_token'              => 'string'
+        'remember_token'              => 'string',
     ];
 
     /**
      * Validation rules
      *
      * @return array
-     * @return array
-     * @var    array
      */
     public static function rules(): array
     {
         return [
             'name'            => ['string', 'max:255'],
             'email'           => ['nullable', 'string', 'max:255', 'email:rfc'],
-            'account_name'    => ['string', 'max:255'],
             'password'        => ['string', 'max:255', 'min:8'],
             'passwordConfirm' => ['string', 'same:password'],
         ];

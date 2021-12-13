@@ -12,6 +12,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-mbstring": "*",
+        "ext-zip": "*",
         "fideloper/proxy": "^4.4",
         "jdorn/sql-formatter": "^1.2",
         "kreait/firebase-php": "^5.14",
@@ -56,7 +57,7 @@
             "App\\": "app/"
         },
         "classmap": [
-            "database/seeds",
+            "database/seeders",
             "database/factories"
         ],
         "files": [

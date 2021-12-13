@@ -46,24 +46,33 @@ function gitBranch() {
 }
 
 function gitLint() {
-  // gitのコマンドを実行
-  const gitStatusStdOut = childProcess.execSync('git status -s').toString();
-  // git status -sで次の様な文字列が標準出力される
-  // A  a.txt
-  // M app/Library/Omise/Charge/Mock/OmiseChargeMock.php
-  // M database/seeders/EventWebOrderSeeder.php
-  // M package.json
-  // これらの内 A, M が今回変更されて色々処理すべきファイル。これを正規表現で抜き出す
-  const filePaths = gitStatusStdOut
-    .split("\n")
-    .map(line => line.match(/^\s*[AM] +(.*)$/)?.[1])
+  // gitのコマンドを実行してコミットされようとしているファイルパスを抽出
+  const filePaths = childProcess
+    .execSync('git diff --staged --diff-filter=ACMR --name-only -z').toString()
+    // git diff --staged --diff-filter=ACMR --name-only -z で次の様な文字列が標準出力されます
+    //.php-cs-fixer.php^@app/Http/Controllers/MemberAPI/ClientErrorLoggerController.php^@gitHooks/preCommit.js^@resources/js/@types/not-js-files.d.ts^@
+    // ^@は \u0000 のヌル文字です
+    // この実行結果を整形して有効なファイルパスの配列にします
+    .replace(/\u0000$/, '')
+    .split("\u0000")
     .filter(v => !!v)
   ;
+  // 対象のファイル一覧を表示。このファイルパスを元に色々できます。
   console.log(filePaths)
+
+  // package.json の中からこのスクリプト用の実行スクリプトセット app-lint-staged を抜き出す
   const p = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json')).toString())
   if (!p['app-lint-staged']) {
     return;
   }
+  // app-lint-staged中の設定に従ってファイルを振り分けて処理
+  // ex.
+  //     "app-lint-staged": {
+  //         ".*\\.php": [
+  //             "docker-compose run --rm app ./vendor/bin/php-cs-fixer fix -vvv --config ./.php-cs-fixer.php",
+  //             "git add"
+  //         ]
+  //     },
   Object.keys(p['app-lint-staged']).forEach(regexStr => {
     const regex = new RegExp(regexStr.replace('*', '.*').replace(/([^\\])\./, '$1\\.'));
     filePaths.forEach(filePath => {
@@ -72,6 +81,7 @@ function gitLint() {
       }
       p['app-lint-staged'][regexStr].forEach(cmdStr => {
         console.log(`${cmdStr} "${filePath}"`)
+        // package.json 内で定義されたコマンドの末尾にファイルパスを追記してコマンドを実行
         const res = childProcess.execSync(`${cmdStr} "${filePath}"`);
         console.log(res.toString())
       })
