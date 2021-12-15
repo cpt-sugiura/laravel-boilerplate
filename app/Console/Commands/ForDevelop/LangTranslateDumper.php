@@ -24,16 +24,18 @@ class LangTranslateDumper extends BaseCommand
     /**
      * @throws ErrorException
      */
-    public function handle(): void
+    public function handle(): int
     {
         $translator = $this->getTranslator();
         if (! $this->option('react') && ! $this->option('laravel')) {
             $this->warn('no action. plz -r or -l');
 
-            return;
+            return static::FAILURE;
         }
         $this->option('laravel') && $this->handleLaravel($translator);
         $this->option('react') && $this->handleReact($translator);
+
+        return static::SUCCESS;
     }
 
     /**

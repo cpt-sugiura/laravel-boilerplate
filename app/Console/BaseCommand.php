@@ -16,7 +16,7 @@ abstract class BaseCommand extends Command
     /**
      * 処理本体
      */
-    abstract public function handle(): void;
+    abstract public function handle(): int;
 
     /**
      * Windowsでも見やすいエラー表示

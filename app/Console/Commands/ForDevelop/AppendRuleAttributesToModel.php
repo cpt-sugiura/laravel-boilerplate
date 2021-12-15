@@ -26,7 +26,7 @@ class AppendRuleAttributesToModel extends BaseCommand
      *
      * @return mixed
      */
-    public function handle(): void
+    public function handle(): int
     {
         /** @var BaseEloquent $modelNamePath */
         $modelNamePath = $this->argument('classNamePath');
@@ -46,6 +46,7 @@ class AppendRuleAttributesToModel extends BaseCommand
         $replacedContent = $this->replacer($content, $attributeMap);
 
         file_put_contents($modelFilePath, $replacedContent);
+        return static::SUCCESS;
     }
 
     /**

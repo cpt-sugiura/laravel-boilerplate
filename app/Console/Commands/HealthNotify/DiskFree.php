@@ -12,7 +12,7 @@ class DiskFree extends BaseCommand
     private const MB = 1024 * 1024;
     private const GB = 1024 * 1024 * 1024;
 
-    public function handle(): void
+    public function handle(): int
     {
         $dfByte   = disk_free_space('/');
         $dtByte   = disk_total_space('/');
@@ -26,5 +26,7 @@ class DiskFree extends BaseCommand
                 .' (GB)('.(int) ($usedByte / $dtByte * 100).'%)'
             ]));
         }
+
+        return static::SUCCESS;
     }
 }

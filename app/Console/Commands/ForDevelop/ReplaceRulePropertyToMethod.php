@@ -25,7 +25,7 @@ class ReplaceRulePropertyToMethod extends BaseCommand
      *
      * @return mixed
      */
-    public function handle(): void
+    public function handle(): int
     {
         $modelFilePath = config('infyom.laravel_generator.path.model').DIRECTORY_SEPARATOR.$this->argument(
             'className'
@@ -35,6 +35,8 @@ class ReplaceRulePropertyToMethod extends BaseCommand
         $replacedContent = $this->replacer($content);
 
         file_put_contents($modelFilePath, $replacedContent);
+
+        return static::SUCCESS;
     }
 
     /**

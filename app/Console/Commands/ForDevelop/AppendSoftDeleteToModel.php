@@ -24,9 +24,9 @@ class AppendSoftDeleteToModel extends BaseCommand
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
-    public function handle(): void
+    public function handle(): int
     {
         /** @var BaseEloquent $modelNamePath */
         $modelNamePath = $this->argument('classNamePath');
@@ -36,12 +36,12 @@ class AppendSoftDeleteToModel extends BaseCommand
         if (! $deletedAtColumn) {
             $this->error($modelInstance->getTable().'.deleted_at カラムが見つかりませんでした。');
 
-            return;
+            return static::FAILURE;
         }
         if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($modelInstance), true)) {
             $this->error('既に SoftDeletes は use されています');
 
-            return;
+            return static::FAILURE;
         }
 
         $modelFilePath   = config('infyom.laravel_generator.path.model').DIRECTORY_SEPARATOR.class_basename($modelNamePath).'.php';
@@ -49,6 +49,7 @@ class AppendSoftDeleteToModel extends BaseCommand
         $replacedContent = $this->appender($content);
 
         file_put_contents($modelFilePath, $replacedContent);
+        return static::SUCCESS;
     }
 
     private function appender(string $content): string
