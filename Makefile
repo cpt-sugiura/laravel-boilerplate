@@ -1,6 +1,11 @@
+COPY = cp
+
+ifeq ($(OS),Windows_NT)
+    COPY = copy
+endif
+
 install:
-	cp .env.example .env
-	docker-compose up -d --build
+	$(COPY) .env.example .env	docker-compose up -d --build
 	docker-compose exec app composer install
 	docker-compose exec app php artisan key:generate
 	docker-compose exec app composer dump-autoload
