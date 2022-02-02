@@ -15,32 +15,32 @@
         "ext-zip": "*",
         "fideloper/proxy": "^4.4",
         "jdorn/sql-formatter": "^1.2",
-        "kreait/firebase-php": "^5.14",
+        "kreait/firebase-php": "^6.1",
         "laravel/framework": "8.*",
-        "laravel/tinker": "^2.4",
+        "laravel/tinker": "^2.7",
         "maatwebsite/excel": "^3.1",
         "setasign/fpdi": "^2.3",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "stichoza/google-translate-php": "^4.1",
-        "symfony/yaml": "^5.2",
+        "symfony/yaml": "^5.4",
         "tecnickcom/tcpdf": "^6.4",
-        "thedoctor0/laravel-factory-generator": "^1.0"
+        "thedoctor0/laravel-factory-generator": "^1.2"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.7",
-        "fakerphp/faker": "^1.13",
-        "friendsofphp/php-cs-fixer": "^2.16",
+        "barryvdh/laravel-ide-helper": "^2.12",
+        "fakerphp/faker": "^1.18",
+        "friendsofphp/php-cs-fixer": "^2.19",
         "greenlion/php-sql-parser": "^4.4",
         "infyomlabs/laravel-generator": "8.0.x-dev",
         "itsgoingd/clockwork": "^5.0",
-        "laravel/dusk": "^6.7",
-        "mockery/mockery": "^1.4",
+        "laravel/dusk": "^6.22",
+        "mockery/mockery": "^1.5",
         "molay76/laravel-mysql2plantuml": "^1.9",
         "phpmetrics/phpmetrics": "^2.7",
         "phpunit/phpunit": "^9.3",
         "roave/security-advisories": "dev-master",
-        "squizlabs/php_codesniffer": "^3.5.8",
-        "ucan-lab/laravel-dacapo": "^4.0"
+        "squizlabs/php_codesniffer": "^3.6",
+        "ucan-lab/laravel-dacapo": "^4.1"
     },
     "config": {
         "optimize-autoloader": true,
@@ -57,12 +57,10 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         },
-        "classmap": [
-            "database/seeders",
-            "database/factories"
-        ],
         "files": [
             "app/helpers.php"
         ]
@@ -72,7 +70,21 @@
             "Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "scripts": {}
+    "prefer-stable": true
 }

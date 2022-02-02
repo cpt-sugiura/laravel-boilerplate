@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Console\Commands\ForDevelop;
+namespace App\Console\Commands\ForDevelop\ModelMaker;
 
 use App\Console\BaseCommand;
 use App\Models\Eloquents\BaseEloquent;
+
+use function class_basename;
+use function config;
 
 class AppendRuleAttributesToModel extends BaseCommand
 {

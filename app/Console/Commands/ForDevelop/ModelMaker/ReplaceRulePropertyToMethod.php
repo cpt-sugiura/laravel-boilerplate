@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Console\Commands\ForDevelop;
+namespace App\Console\Commands\ForDevelop\ModelMaker;
 
 use App\Console\BaseCommand;
+
+use function config;
 
 class ReplaceRulePropertyToMethod extends BaseCommand
 {

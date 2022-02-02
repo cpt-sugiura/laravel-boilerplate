@@ -12,14 +12,14 @@ use InvalidArgumentException;
  */
 abstract class IdObjectCollection
 {
-    /** @var object[]|Collection xxx_idプロパティを持つオブジェクトのコレクション */
+    /** @var Collection xxx_idプロパティを持つオブジェクトのコレクション */
     protected Collection $items;
 
     /**
      * CoinCollection constructor.
-     * @param Collection|object[] $items xxx_idプロパティを持つオブジェクトの配列かコレクション
+     * @param  Collection|object[]  $items  xxx_idプロパティを持つオブジェクトの配列かコレクション
      */
-    public function __construct($items = [])
+    public function __construct(array|Collection $items = [])
     {
         if (is_array($items)) {
             $items = collect($items);

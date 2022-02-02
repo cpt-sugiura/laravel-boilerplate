@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Console\Commands\ForDevelop;
+namespace App\Console\Commands\ForDevelop\ModelMaker;
 
 use DB;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use InfyOm\Generator\Commands\BaseCommand;
 use InfyOm\Generator\Common\CommandData;
+
+use function config;
 
 class DumpInfyomJsonFromTable extends BaseCommand
 {
