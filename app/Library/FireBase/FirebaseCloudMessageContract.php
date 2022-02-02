@@ -12,13 +12,13 @@ use Kreait\Firebase\Messaging\RegistrationTokens;
 interface FirebaseCloudMessageContract
 {
     /**
-     * @param  RegistrationTokens|RegistrationToken[]|string[] $registrationTokens
-     * @param  bool                                            $validateOnly
+     * @param  RegistrationToken[]|RegistrationTokens|string[]  $registrationTokens
+     * @param  bool                                             $validateOnly
+     * @return MulticastSendReport|null
      * @throws MessagingException
      * @throws FirebaseException
-     * @return MulticastSendReport
      */
-    public function sendMulticast($registrationTokens, bool $validateOnly = false): ?MulticastSendReport;
+    public function sendMulticast(array|RegistrationTokens $registrationTokens, bool $validateOnly = false): ?MulticastSendReport;
 
     /**
      * @param $token

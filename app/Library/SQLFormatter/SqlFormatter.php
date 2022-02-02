@@ -52,7 +52,7 @@ class SqlFormatter
      * @param  mixed  $value
      * @return string
      */
-    protected static function replacePlaceholderValue($value): string
+    protected static function replacePlaceholderValue(mixed $value): string
     {
         if ($value === null) {
             return 'null';

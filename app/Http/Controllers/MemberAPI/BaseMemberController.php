@@ -4,7 +4,7 @@ namespace App\Http\Controllers\MemberAPI;
 
 use App\Http\Controllers\ApiResponseTrait;
 use App\Http\Controllers\Controller;
-use App\Models\Eloquents\Member;
+use App\Models\Eloquents\Member\Member;
 
 abstract class BaseMemberController extends Controller
 {

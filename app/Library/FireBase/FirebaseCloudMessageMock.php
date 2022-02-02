@@ -16,11 +16,11 @@ use Log;
 class FirebaseCloudMessageMock implements FirebaseCloudMessageContract
 {
     /**
-     * @param  RegistrationTokens|RegistrationToken[]|string[] $registrationTokens
-     * @param  bool                                            $validateOnly
-     * @return MulticastSendReport
+     * @param  RegistrationToken[]|RegistrationTokens|string[]  $registrationTokens
+     * @param  bool                                             $validateOnly
+     * @return MulticastSendReport|null
      */
-    public function sendMulticast($registrationTokens, bool $validateOnly = false): ?MulticastSendReport
+    public function sendMulticast(array|RegistrationTokens $registrationTokens, bool $validateOnly = false): ?MulticastSendReport
     {
         Log::info('called mock FCM');
 

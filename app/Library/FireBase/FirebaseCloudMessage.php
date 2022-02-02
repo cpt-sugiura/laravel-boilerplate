@@ -8,7 +8,7 @@ use JsonException;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging;
+use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\ApnsConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\MessageData;
@@ -27,7 +27,7 @@ class FirebaseCloudMessage implements FirebaseCloudMessageContract
      * FirebaseCloudMessage constructor.
      * @param Messaging|null $messaging
      */
-    private function __construct(Messaging $messaging = null)
+    protected function __construct(Messaging $messaging = null)
     {
         $this->messaging = $messaging ?? (new Factory())->createMessaging();
     }
@@ -42,14 +42,14 @@ class FirebaseCloudMessage implements FirebaseCloudMessageContract
     }
 
     /**
-     * @param  RegistrationTokens|RegistrationToken[]|string[] $registrationTokens
-     * @param  bool                                            $validateOnly
+     * @param  RegistrationToken[]|RegistrationTokens|string[]  $registrationTokens
+     * @param  bool                                             $validateOnly
+     * @return MulticastSendReport|null
      * @throws FirebaseException
      * @throws JsonException
      * @throws MessagingException
-     * @return MulticastSendReport
      */
-    public function sendMulticast($registrationTokens, bool $validateOnly = false): ?MulticastSendReport
+    public function sendMulticast(array|RegistrationTokens $registrationTokens, bool $validateOnly = false): ?MulticastSendReport
     {
         if (count($registrationTokens) === 0) {
             return null;

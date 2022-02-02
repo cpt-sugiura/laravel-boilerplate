@@ -16,5 +16,5 @@ interface TranslatableToCloudMessage
     /**
      * @return int|string member/{ret} で会員詳細APIの様なID
      */
-    public function fcmIdOnUrl();
+    public function fcmIdOnUrl(): int|string;
 }

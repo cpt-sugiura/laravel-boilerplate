@@ -18,10 +18,10 @@ class QueryLogFormatter
     /**
      * 渡されたロガーインスタンス（Monolog インスタンス）のカスタマイズ
      *
-     * @param  Logger $monolog
+     * @param  Logger  $monolog
      * @return void
      */
-    public function __invoke($monolog)
+    public function __invoke(Logger $monolog)
     {
         $formatter = new LineFormatter(self::LOG_FORMAT, 'Y/m/d H:i:s.v', true, true);
 
