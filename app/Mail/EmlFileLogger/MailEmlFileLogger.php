@@ -6,6 +6,8 @@ use App\Models\Eloquents\MailLog;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Mail\Message;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Header\AbstractHeader;
 
 class MailEmlFileLogger
 {
@@ -27,9 +29,9 @@ class MailEmlFileLogger
         $logPath = $this->makeLogFilePath($message, $event);
 
         $this->saveAsEmlFile($logPath, $message);
-        if($event instanceof MessageSent) {
-            $this->saveAsDatabaseRecord($message, $logPath);
-        }
+//        if($event instanceof MessageSent) {
+        $this->saveAsDatabaseRecord($message, $logPath);
+//        }
 
         // メールファイルとは別にログを残したり
         $subject = $message->getSubject();
@@ -77,40 +79,50 @@ class MailEmlFileLogger
      */
     protected function saveAsEmlFile(string $logPath, Message $message): void
     {
-        // Swift_Message の中身をログファイルを対象に出力させる
-        $stream = new \Swift_ByteStream_FileByteStream($logPath, true);
-        $message->toByteStream($stream);
+        file_put_contents($logPath, $message->getSymfonyMessage()->toString());
     }
 
     /**
-     * @param  Message|\Swift_Message  $message
-     * @param  string                  $logPath
+     * @param  Message  $message
+     * @param  string   $logPath
      */
-    protected function saveAsDatabaseRecord(Message|\Swift_Message $message, string $logPath): void
+    protected function saveAsDatabaseRecord(Message $message, string $logPath): void
     {
-        $from = $message->getFrom();
-        if(is_array($from)) {
-            $from = implode(', ', array_keys($from));
-        }
-        $to = $message->getTo();
-        if(is_array($to)) {
-            $to = implode(', ', array_keys($to));
-        }
+        $from = implode(', ', array_map(static fn(Address $address) => $address->toString(), $message->getFrom()));
+        $to   = implode(', ', array_map(static fn(Address $address) => $address->toString(), $message->getTo()));
 
+        $headersArr = [];
+        foreach($message->getSymfonyMessage()->getPreparedHeaders()->all() as $header) {
+            preg_match('/(.*?): (.*)/', $header->toString(), $matches);
+            if(count($matches) === 3) {
+                $headersArr[$matches[1]] = $matches[2];
+            }
+        }
+        foreach($message->getBody()->getPreparedHeaders()->all() as $header) {
+            // todo params header の考慮これでよいか検証
+            preg_match('/(.*?): (.*?); .*/', $header->toString(), $matches);
+            if(count($matches) === 3) {
+                $headersArr[$matches[1]] = $matches[2];
+            }
+            preg_match('/.*charset=(.*)/', $header->toString(), $matches);
+            if(count($matches) === 2) {
+                $headersArr['charset'] = $matches[1];
+            }
+        }
         $log                            = new MailLog();
         $log->subject                   = $message->getSubject() ?? '';
-        $log->message_id                = $message->getSwiftMessage()->getId() ?? '';
-        $log->send_at                   = $message->getDate()->format('Y-m-d H:i:s') ?? '';
+        $log->message_id                = $headersArr['Message-ID'] ?? '';
+        $log->send_at                   = $message->getDate()?->format('Y-m-d H:i:s') ?? '';
         $log->from                      = $from ?? '';
         $log->to                        = $to ?? '';
-        $log->content_type              = $message->getContentType() ?? '';
-        $log->charset                   = $message->getCharset() ?? '';
-        $log->return_path               = $message->getReturnPath() ?? '';
-        $log->mime_version              = optional($message->getHeaders()->get('mime-version'))->toString() ?? '';
-        $log->content_transfer_encoding = optional($message->getHeaders()->get('content-transfer-encoding'))->toString() ?? '';
-        $log->received                  = optional($message->getHeaders()->get('received'))->toString() ?? '';
+        $log->content_type              = $headersArr['Content-Type'] ?? '';
+        $log->charset                   = $headersArr['charset'] ?? '';
+        $log->return_path               = $message->getReturnPath()?->toString() ?? '';
+        $log->mime_version              = $headersArr['MIME-Version'] ?? '';
+        $log->content_transfer_encoding = $headersArr['Content-Transfer-Encoding'] ?? '';
+        $log->received                  = $message->getHeaders()->getHeaderBody('received') ?? '';
         $log->headers                   = $message->getHeaders()->toString() ?? '';
-        $log->content                   = $message->getBody() ?? '';
+        $log->content                   = $message->getBody()->bodyToString() ?? '';
         $log->storage_path              = str_replace(storage_path(''), '', $logPath);
         $log->save();
     }

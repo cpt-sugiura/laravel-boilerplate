@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use Illuminate\Support\Collection;
 use Swift_DependencyContainer;
 use Swift_Preferences;
 
