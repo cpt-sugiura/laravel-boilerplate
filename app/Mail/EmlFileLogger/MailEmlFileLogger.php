@@ -29,9 +29,9 @@ class MailEmlFileLogger
         $logPath = $this->makeLogFilePath($message, $event);
 
         $this->saveAsEmlFile($logPath, $message);
-//        if($event instanceof MessageSent) {
-        $this->saveAsDatabaseRecord($message, $logPath);
-//        }
+        if($event instanceof MessageSent) {
+            $this->saveAsDatabaseRecord($message, $logPath);
+        }
 
         // メールファイルとは別にログを残したり
         $subject = $message->getSubject();
