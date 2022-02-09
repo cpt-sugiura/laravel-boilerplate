@@ -291,17 +291,12 @@ modules.xml
 
 # Generated files
 
-# PHPUnit
-/app/phpunit.xml
-/phpunit.xml
-
 # Build data
 /build/
 
 ### react ###
 .DS_*
 *.log
-logs
 **/*.backup.*
 **/*.back.*
 
@@ -313,5 +308,5 @@ bower_components
 psd
 thumb
 sketch
-
+.php-cs-fixer.cache
 # End of https://www.toptal.com/developers/gitignore/api/laravel,phpstorm+all,phpcodesniffer,react,phpstorm,phpunit,phpstorm+iml

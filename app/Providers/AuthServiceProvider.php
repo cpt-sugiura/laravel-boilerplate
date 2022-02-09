@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\UseCase\EventOrderAuth\EventOrderAuthProvider;
-use Auth;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

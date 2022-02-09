@@ -55,9 +55,9 @@ abstract class BaseFormRequest extends FormRequest
      * スネークケースを付与
      * @return array<string>
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
-        $validated = parent::validated();
+        $validated = parent::validated($key, $default );
 
         return array_merge($validated, array_key_snake($validated));
     }

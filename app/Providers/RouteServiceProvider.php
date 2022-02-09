@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use App\Http\Middleware\SetLocale;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    public const HOME = '/';
     protected $namespace = '';
 
     /**
@@ -15,10 +19,10 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function map(): void
+    public function boot(): void
     {
+        $this->configureRateLimiting();
         $this->mapApiRoutes();
-
         $this->mapWebRoutes();
     }
 
@@ -59,5 +63,17 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware(['api', SetLocale::class])
             ->name('browser-api.')
             ->group(base_path('routes/member_api.php'));
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
     }
 }

@@ -64,7 +64,7 @@ class Member extends Model implements AuthenticatableContract, AuthorizableContr
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;
-
+// todo HasApiTokens を試す
     public $table = 'members';
 
     protected $primaryKey          = 'member_id';

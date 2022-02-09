@@ -53,6 +53,7 @@ use Str;
  */
 class Admin extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
+    // todo HasApiTokens を試す
     use HasRules;
     use Authenticatable;
     use Authorizable;

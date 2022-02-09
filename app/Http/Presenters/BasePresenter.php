@@ -20,7 +20,7 @@ abstract class BasePresenter implements Arrayable, JsonSerializable, Jsonable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

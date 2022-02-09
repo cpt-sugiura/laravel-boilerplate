@@ -2,6 +2,7 @@
 
 use App\Library\Logging\DetailFormatter;
 use App\Library\Logging\QueryLogFormatter;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -12,7 +13,6 @@ try {
 }
 
 return [
-    'enable_request_log' => env('ENABLE_REQUEST_LOG', false),
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -25,6 +25,19 @@ return [
     */
 
     'default' => env('LOG_CHANNEL', 'stack'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deprecations Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the log channel that should be used to log warnings
+    | regarding deprecated PHP and library features. This allows you to get
+    | your application ready for upcoming major versions of dependencies.
+    |
+    */
+
+    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
 
     /*
     |--------------------------------------------------------------------------
@@ -93,37 +106,41 @@ return [
 
         'papertrail' => [
             'driver'       => 'monolog',
-            'level'        => 'debug',
-            'handler'      => SyslogUdpHandler::class,
+            'level'        => env('LOG_LEVEL', 'debug'),
+            'handler'      => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
             'handler_with' => [
-                'host' => env('PAPERTRAIL_URL'),
-                'port' => env('PAPERTRAIL_PORT'),
+                'host'             => env('PAPERTRAIL_URL'),
+                'port'             => env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
             ],
-            'path'         => storage_path('logs/laravel-'.$__current_process_user.'.log'),
-            'permission'   => 0664,
         ],
 
         'stderr' => [
-            'driver'     => 'monolog',
-            'handler'    => StreamHandler::class,
-            'formatter'  => env('LOG_STDERR_FORMATTER'),
-            'with'       => [
+            'driver'    => 'monolog',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'handler'   => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with'      => [
                 'stream' => 'php://stderr',
             ],
-            'path'       => storage_path('logs/laravel-'.$__current_process_user.'.log'),
-            'permission' => 0664,
         ],
 
         'syslog' => [
-            'driver'     => 'syslog',
-            'level'      => 'debug',
-            'path'       => storage_path('logs/laravel-'.$__current_process_user.'.log'),
-            'permission' => 0664,
+            'driver' => 'syslog',
+            'level'  => env('LOG_LEVEL', 'debug'),
         ],
 
         'errorlog' => [
-            'driver'     => 'errorlog',
-            'level'      => 'debug',
+            'driver' => 'errorlog',
+            'level'  => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'null' => [
+            'driver'  => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
             'path'       => storage_path('logs/laravel-'.$__current_process_user.'.log'),
             'permission' => 0664,
         ],

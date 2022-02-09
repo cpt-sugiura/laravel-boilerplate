@@ -128,3 +128,52 @@ failed_jobs:
     failed_at:
       type: timestamp
       useCurrent: true
+
+mail_logs:
+  comment: メールログ
+  columns:
+    mail_log_id: bigIncrements
+    subject:
+      type: string
+      comment: 件名
+    message_id:
+      type: string
+      comment: メール自体の持つメールとしてのID
+    return_path:
+      type: string
+      comment: return-pathとされているメールアドレス
+    from:
+      type: string
+      comment: 差出人
+    to:
+      type: string
+      comment: 宛先
+    content_type:
+      type: string
+      comment: 形式
+    charset:
+      type: string
+      comment: 使用文字コード
+    mime_version:
+      type: string
+      comment: MIMEバージョン
+    content_transfer_encoding:
+      type: string
+      comment: 使用変換形式
+    received:
+      type: string
+      comment: 経路
+    headers:
+      type: text
+      comment: ヘッダー全体
+    content:
+      type: text
+      comment: 本文
+    storage_path:
+      type: string
+      comment: /storageをルートにしたルート相対パス。storage_path(これ)でemlファイルにたどり着ける
+    send_at:
+      type: timestamp
+      nullable: true
+      comment: 送信日時
+    timestamps:
