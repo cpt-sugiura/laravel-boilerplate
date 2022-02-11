@@ -6,6 +6,7 @@ use App\Models\Eloquents\MailLog;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Mail\Message;
+use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Header\AbstractHeader;
 
@@ -124,6 +125,6 @@ class MailEmlFileLogger
         $log->headers                   = $message->getHeaders()->toString() ?? '';
         $log->content                   = $message->getBody()->bodyToString() ?? '';
         $log->storage_path              = str_replace(storage_path(''), '', $logPath);
-        $log->save();
+//        $log->save();
     }
 }

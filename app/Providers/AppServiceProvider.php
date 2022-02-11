@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
+use App\Mail\SmtpChangeableEncodingTransport\SmtpChangeableEncodingTransportFactory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Mailer\Transport\Dsn;
-use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
-use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
     }
 
     /**
@@ -27,6 +25,29 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // smtp の名前を使っているメールドライバーを上書き
+        // もし上書きしないのであれば、ここの第一引数を別の名前にして /config/mail.php に
+        // 'mailers' => [
+        //     '並列させる新たなMailerの名前' => [
+        //         'transport'  => 'ここで定めた新たな transport の名前'
+        //     ],
+        //     'smtp' => [
+        //          // 省略
+        // の様に書く
+        \Mail::extend('smtp', static function() {
+            // smtp ドライバーの初期化処理をコピペ。本来の smtp ドライバー用の TransportFactory の代わりに
+            // 独自の SmtpIso2022JpTransportFactory を呼び出す
+            $config = config('mail.mailers.smtp');
+            return (new \App\Mail\SmtpChangeableEncodingTransport\SmtpChangeableEncodingTransportFactory())
+                ->create(new \Symfony\Component\Mailer\Transport\Dsn(
+                    !empty($config['encryption']) && $config['encryption'] === 'tls' ? 'smtps' : '',
+                    $config['host'],
+                    $config['username'] ?? null,
+                    $config['password'] ?? null,
+                    $config['port'] ?? null,
+                    $config
+                ));
+        });
         setlocale(LC_ALL, 'C.UTF-8');
         if(config('app.debug') && config('app.debug_datetime')) {
             $debugDatetime = config('app.debug_datetime');
