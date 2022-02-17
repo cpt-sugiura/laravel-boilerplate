@@ -3,6 +3,7 @@
 namespace App\Library\Excel;
 
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class CollectionToExcelService implements FromCollection
 {
+    use Exportable;
+
     protected Collection $collection;
 
     /**
@@ -35,34 +38,5 @@ class CollectionToExcelService implements FromCollection
     public function collection(): Collection
     {
         return $this->collection;
-    }
-
-    /**
-     * Excelファイルとしてダウンロード
-     * @param  string       $fileName
-     * @param  string|null  $writerType
-     * @param  array        $responseHeaders
-     * @return BinaryFileResponse
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function download(string $fileName, ?string $writerType = null, array $responseHeaders = []): BinaryFileResponse
-    {
-        return Excel::download($this, $fileName, $writerType, $responseHeaders);
-    }
-
-    /**
-     * Excelファイルとして保存
-     * @param  string       $filePath
-     * @param  string|null  $disk
-     * @param  string|null  $writerType
-     * @param  array        $diskOptions
-     * @return bool
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function store(string $filePath, string $disk = null, string $writerType = null, array $diskOptions = []): bool
-    {
-        return Excel::store($this, $filePath, $disk, $writerType, $diskOptions);
     }
 }
