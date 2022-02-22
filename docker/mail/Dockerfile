@@ -1,4 +1,4 @@
-FROM tvial/docker-mailserver:stable
+FROM mailserver/docker-mailserver:10.4.0
 
 RUN touch /etc/postfix/vmailbox
 RUN apt-get update && \
