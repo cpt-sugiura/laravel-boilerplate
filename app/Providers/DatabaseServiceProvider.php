@@ -16,18 +16,43 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Connection::resolverFor('mysql', function (...$parameters) {
+        try{
+            $this->main();
+        }catch(\PDOException $e){
+            if(is_production()){
+                throw $e;
+            }
+            dump('WARNING: '. $e->getMessage());
+        }
+    }
+
+    /**
+     * 今走っている PHP プロセスがデータベース初期化処理のプロセスか否か
+     * @return bool
+     */
+    private function isSeedingProcess(): bool
+    {
+        return isset($_SERVER['argv']) && (in_array('seed', $_SERVER['argv'], true) || in_array('--seed', $_SERVER['argv'], true));
+    }
+
+    /**
+     * @return void
+     * @throws \Doctrine\DBAL\Exception
+     */
+    protected function main(): void
+    {
+        Connection::resolverFor('mysql', function(...$parameters) {
             return new MySqlConnection(...$parameters);
         });
         DB::getDoctrineSchemaManager()->getDatabasePlatform()
-                ->registerDoctrineTypeMapping('enum', 'string');
-        if ($this->isSeedingProcess()) {
+            ->registerDoctrineTypeMapping('enum', 'string');
+        if($this->isSeedingProcess()) {
             // データベース初期化時はクエリログを書き込まない
             return;
         }
         DB::connection()->enableQueryLog();
-        DB::connection()->listen(static function (QueryExecuted $query) {
-            if ($query->time < 1000) {
+        DB::connection()->listen(static function(QueryExecuted $query) {
+            if($query->time < 1000) {
                 Log::channel('query_log')->debug($query->sql, [
                     'params'  => $query->bindings,
                     'time_ms' => $query->time,
@@ -41,14 +66,5 @@ class DatabaseServiceProvider extends ServiceProvider
                 ]);
             }
         });
-    }
-
-    /**
-     * 今走っている PHP プロセスがデータベース初期化処理のプロセスか否か
-     * @return bool
-     */
-    private function isSeedingProcess(): bool
-    {
-        return isset($_SERVER['argv']) && (in_array('seed', $_SERVER['argv'], true) || in_array('--seed', $_SERVER['argv'], true));
     }
 }
