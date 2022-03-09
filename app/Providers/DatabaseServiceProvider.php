@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App;
 use App\Database\MySqlConnection;
 use DB;
 use Illuminate\Database\Connection;
@@ -19,7 +20,7 @@ class DatabaseServiceProvider extends ServiceProvider
         try{
             $this->main();
         }catch(\PDOException $e){
-            if(is_production()){
+            if(App::isProduction()){
                 throw $e;
             }
             dump('WARNING: '. $e->getMessage());
