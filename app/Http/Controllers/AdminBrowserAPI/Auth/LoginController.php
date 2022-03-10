@@ -39,7 +39,7 @@ class LoginController extends BaseAdminBrowserAPIController
 
     public function login(LoginRequest $request, LoginAction $action): JsonResponse
     {
-        if ($this->hasTooManyLoginAttempts($request)) {
+        if ($this->hasTooManyLoginAttempts()) {
             $this->fireLockoutEvent($request);
             $seconds = $this->limiter()->availableIn($this->throttleKey());
 
@@ -51,8 +51,8 @@ class LoginController extends BaseAdminBrowserAPIController
         $success = $action($request->email, $request->password, (bool) $request->remember);
 
         if (! $success) {
+            $this->incrementLoginAttempts();
             $this->throwErrorResponse(Lang::get('auth.failed'), HttpStatus::UNAUTHORIZED);
-            $this->incrementLoginAttempts($request);
         }
 
         return $this->makeSuccessResponse();

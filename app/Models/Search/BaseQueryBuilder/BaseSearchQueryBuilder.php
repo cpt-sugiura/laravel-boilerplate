@@ -88,7 +88,7 @@ abstract class BaseSearchQueryBuilder
      * @param  array|string|null      $orderBy
      * @return BaseSearchQueryBuilder
      */
-    public function search(?array $search = null, null | array | string $orderBy = null): self
+    public function search(?array $search = null, null|array|string $orderBy = null): self
     {
         $search ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getSearch() : [];
         $orderBy ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getOrderBy() : [];
@@ -134,7 +134,7 @@ abstract class BaseSearchQueryBuilder
      * @param  array|string $orderBy
      * @return Builder
      */
-    protected function buildSearchOrderBy(array | string $orderBy): Builder
+    protected function buildSearchOrderBy(array|string $orderBy): Builder
     {
         if (is_string($orderBy)) {
             $orderBy = [$orderBy => 'asc'];
@@ -161,10 +161,10 @@ abstract class BaseSearchQueryBuilder
      * @param  object       $searchResultItem
      * @return object|array
      */
-    protected function formatter(object $searchResultItem): object | array
+    protected function formatter(object $searchResultItem): object|array
     {
         foreach (get_object_vars($searchResultItem) as $property => $v) {
-            $date = date_create_from_format('Y-m-d H:i:s', $searchResultItem->$property, )
+            $date = date_create_from_format('Y-m-d H:i:s', $searchResultItem->$property)
                 ?: date_create_from_format('Y-m-d', $searchResultItem->$property);
             if ($date instanceof \DateTime) {
                 $searchResultItem->$property = $date->format(DateTimeInterface::ATOM);
@@ -193,7 +193,7 @@ abstract class BaseSearchQueryBuilder
      * @param  null                                                  $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate(int | null $perPage = null, array $columns = null, string $pageName = 'pages', $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function paginate(int|null $perPage = null, array $columns = null, string $pageName = 'pages', $page = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $columns ??= $this->select() ?? ['*'];
         $perPage ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getPerPage() : 15;
@@ -222,7 +222,7 @@ abstract class BaseSearchQueryBuilder
      * @param  null      $page
      * @return Paginator
      */
-    public function simplePaginate(int | null $perPage = null, ?array $columns = null, string $pageName = 'pages', $page = null): Paginator
+    public function simplePaginate(int|null $perPage = null, ?array $columns = null, string $pageName = 'pages', $page = null): Paginator
     {
         $columns ??= $this->select();
         $perPage ??= isset($this->searchRequestDefault) ? $this->searchRequestDefault->getPerPage() : 15;

@@ -17,13 +17,13 @@ class DatabaseServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        try{
+        try {
             $this->main();
-        }catch(\PDOException $e){
-            if(App::isProduction()){
+        } catch (\PDOException $e) {
+            if (App::isProduction()) {
                 throw $e;
             }
-            dump('WARNING: '. $e->getMessage());
+            dump('WARNING: '.$e->getMessage());
         }
     }
 
@@ -37,23 +37,23 @@ class DatabaseServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return void
      * @throws \Doctrine\DBAL\Exception
+     * @return void
      */
     protected function main(): void
     {
-        Connection::resolverFor('mysql', function(...$parameters) {
+        Connection::resolverFor('mysql', static function (...$parameters) {
             return new MySqlConnection(...$parameters);
         });
         DB::getDoctrineSchemaManager()->getDatabasePlatform()
             ->registerDoctrineTypeMapping('enum', 'string');
-        if($this->isSeedingProcess()) {
+        if ($this->isSeedingProcess()) {
             // データベース初期化時はクエリログを書き込まない
             return;
         }
         DB::connection()->enableQueryLog();
-        DB::connection()->listen(static function(QueryExecuted $query) {
-            if($query->time < 1000) {
+        DB::connection()->listen(static function (QueryExecuted $query) {
+            if ($query->time < 1000) {
                 Log::channel('query_log')->debug($query->sql, [
                     'params'  => $query->bindings,
                     'time_ms' => $query->time,

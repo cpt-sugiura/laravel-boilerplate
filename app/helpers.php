@@ -41,8 +41,8 @@ if (! function_exists('bounden_sql')) {
 if (! function_exists('fread_head')) {
     /**
      * ファイルを先頭から$lines行読み込む
-     * @param  string  $filename
-     * @param  int     $lines
+     * @param  string $filename
+     * @param  int    $lines
      * @return string
      */
     function fread_head(string $filename, int $lines = 25): string
@@ -63,9 +63,9 @@ if (! function_exists('fread_tail')) {
     /**
      * ファイルを末尾から$lines行分読み込む
      * @see https://www.geekality.net/2011/05/28/php-tail-tackling-large-files/
-     * @param  string  $filename
-     * @param  int     $lines
-     * @param  int     $buffer
+     * @param  string $filename
+     * @param  int    $lines
+     * @param  int    $buffer
      * @return string
      */
     function fread_tail(string $filename, int $lines = 50, int $buffer = 4096): string
@@ -121,14 +121,14 @@ if (! function_exists('array_in_str')) {
      * 文字列$str中に$needlesに含まれる文字列のいずれかが存在するか否かを判定する関数
      * 存在するならばtrue, 存在しないならばfalse
      *
-     * @param  string        $str
-     * @param  array|string  $needles
+     * @param  string       $str
+     * @param  array|string $needles
      * @return bool
      */
     function array_in_str(string $str, array|string $needles): bool
     {
         if (! is_array($needles)) {
-            return str_contains($str, (string)$needles);
+            return str_contains($str, $needles);
         }
         foreach ($needles as $needle) {
             if (str_contains($str, $needle)) {
@@ -232,10 +232,10 @@ if (! function_exists('fast_array_random')) {
 if (! function_exists('mb_wordwrap')) {
     /**
      * 日本語対応wordwrap. 指定した文字数で文字列を分割する。行の最大長を決めて整形することを目的に作成。
-     * @param  string  $str                  入力文字列。分割対象の文字列。
-     * @param  int     $width                文字列を分割するときの文字数。新しい一行の長さ。
-     * @param  string  $break                分割に用いる文字。改行文字。
-     * @param  string  $originalDeliminator  元々分割に用いていた文字。改行文字。
+     * @param  string $str                 入力文字列。分割対象の文字列。
+     * @param  int    $width               文字列を分割するときの文字数。新しい一行の長さ。
+     * @param  string $break               分割に用いる文字。改行文字。
+     * @param  string $originalDeliminator 元々分割に用いていた文字。改行文字。
      * @return string 受け取った文字列を指定した長さで分割したものを返します
      * @see wordwrap()
      */
@@ -257,7 +257,7 @@ if (! function_exists('mb_wordwrap')) {
 }
 
 if (! function_exists('dev_slack_log')) {
-    function dev_slack_log(): Illuminate\Support\Optional | \Psr\Log\LoggerInterface
+    function dev_slack_log(): Illuminate\Support\Optional|Psr\Log\LoggerInterface
     {
         if (! config('logging.channels.develop_slack.url')) {
             return optional();
@@ -317,34 +317,34 @@ if (! function_exists('request_arr_to_html_input_arr')) {
      *
      * </pre>
      * @see https://qiita.com/puchida/items/e582488dc0a087c4bfcf
-     * @param  array  $requests  呼出し時は配列
+     * @param  array $requests 呼出し時は配列
      * @return array
      */
     function request_arr_to_html_input_arr(array $requests): array
     {
-        $request_arr_to_html_input_arr_body = static function(
+        $request_arr_to_html_input_arr_body = static function (
             float|array|int|string $requests,
             array $ret = [],
             array $keys = [],
             string $key = null
         ) use (&$request_arr_to_html_input_arr_body) {
-            if($key !== null) {
+            if ($key !== null) {
                 // 配列のキーに使う文字列を追加。一番最初に呼び出された時だけ $key === null
                 $keys[] = $key;
             }
-            if(!is_array($requests)) {
+            if (! is_array($requests)) {
                 // 貯まった文字列を結合してキーにして、配列に値を追加
                 // ex.
                 // <input type="text" name="hoge[fuga][]" value="foo"> とあったら、この時点で
                 // $keys === ['hoge', '[fuga]', '[]'] && $requests === 'foo'
                 // が成り立つ値が変数に格納されている
                 $inputName = implode('', $keys);
-                if(!isset($ret[$inputName])) {
+                if (! isset($ret[$inputName])) {
                     // まだ入れる場所が未定義ならばとりあえずそのまま入れる
                     $ret[$inputName] = $requests;
                 } else {
                     // 重複による上書きを避けるために一次元配列にまとめる
-                    if(!is_array($ret[$inputName])) {
+                    if (! is_array($ret[$inputName])) {
                         // まだ配列化していないならば配列化
                         $ret[$inputName] = [$ret[$inputName], $requests];
                     } else {
@@ -357,28 +357,28 @@ if (! function_exists('request_arr_to_html_input_arr')) {
             }
 
             // 配列が続いている場合、再帰でキーを連鎖させていく
-            if($requests === [] || (array_keys($requests) === range(0, count($requests) - 1))) {
+            if ($requests === [] || (array_is_list($requests))) {
                 // 配列の添え字が 0, 1, 2,... と連番の場合
-                foreach($requests as $i => $v) {
-                    if(!is_array($v)) {
+                foreach ($requests as $i => $v) {
+                    if (! is_array($v)) {
                         // 配列 input の末尾をループしているので [] をつける
                         $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '[]');
                     } else {
                         // まだ続きがあるので [${添え字]] をつける
-                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '[' . $i . ']');
+                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '['.$i.']');
                     }
                 }
             } else {
                 // 配列が連想配列の場合
-                if(empty($keys)) {
+                if (empty($keys)) {
                     // $keys が空ならばトップレベルなので現在のキーをそのまま渡す
-                    foreach($requests as $k => $v) {
+                    foreach ($requests as $k => $v) {
                         $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, $k);
                     }
                 } else {
                     // $keys が空でないならばネスト中の連想配列なので現在のキーを [] でくくって渡す
-                    foreach($requests as $k => $v) {
-                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '[' . $k . ']');
+                    foreach ($requests as $k => $v) {
+                        $ret = $request_arr_to_html_input_arr_body($v, $ret, $keys, '['.$k.']');
                     }
                 }
             }

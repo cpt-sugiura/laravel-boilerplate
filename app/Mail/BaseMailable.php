@@ -13,9 +13,9 @@ abstract class BaseMailable extends Mailable
 
     public function __construct()
     {
-        $this->withSwiftMessage(
-            function (\Swift_Message $message) {
-                $message->setReturnPath(config('mail.return-path'));
+        $this->withSymfonyMessage(
+            function (\Symfony\Component\Mime\Email $message) {
+                $message->returnPath(config('mail.return-path'));
             }
         );
     }

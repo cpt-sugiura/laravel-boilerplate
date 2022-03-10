@@ -29,17 +29,17 @@ interface MessagePartInterface
     public function getHeader(string $name): ?HeaderInterface;
 
     /**
-     * @param  string $header
-     * @param  string $attr
-     * @param  string $default
-     * @return string
+     * @param  string      $header
+     * @param  string      $attr
+     * @param  string|null $default
+     * @return string|null
      */
     public function getHeaderAttribute(string $header, string $attr, string $default = null): ?string;
 
     /**
-     * @param  string $name
-     * @param  string $default
-     * @return string
+     * @param  string      $name
+     * @param  string|null $default
+     * @return string|null
      */
     public function getHeaderValue(string $name, string $default = null): ?string;
 

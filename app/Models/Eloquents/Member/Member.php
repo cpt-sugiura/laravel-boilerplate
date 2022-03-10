@@ -22,36 +22,36 @@ use Storage;
  * Class Member
  *
  * @property int                            $member_id
- * @property string                         $name                    名前
- * @property Carbon|null                    $birthday                生年月日
- * @property string|null                    $email                   メールアドレス
- * @property string                         $password                パスワード
- * @property int                            $status                  ステータス
- * @property string|null                    $auth_token              認証用トークン。ログイン時限定APIでこれが送られてない時は弾く
- * @property Carbon|null                    $last_access_at          最終アクセス日時
+ * @property string                         $name                                                      名前
+ * @property Carbon|null                    $birthday                                                  生年月日
+ * @property string|null                    $email                                                     メールアドレス
+ * @property string                         $password                                                  パスワード
+ * @property int                            $status                                                    ステータス
+ * @property string|null                    $auth_token                                                認証用トークン。ログイン時限定APIでこれが送られてない時は弾く
+ * @property Carbon|null                    $last_access_at                                            最終アクセス日時
  * @property Carbon|null                    $created_at
  * @property Carbon|null                    $updated_at
  * @property Carbon|null                    $deleted_at
  * @property Collection|MemberDeviceToken[] $memberDeviceTokens
  * @property int|null                       $member_device_toke
- * @method static Builder|Member newModelQuery()
- * @method static Builder|Member newQuery()
- * @method static \Illuminate\Database\Query\Builder|Member onlyTrashed()
- * @method static Builder|Member query()
- * @method static Builder|Member whereAuthToken($value)
- * @method static Builder|Member whereBirthday($value)
- * @method static Builder|Member whereCreatedAt($value)
- * @method static Builder|Member whereDeletedAt($value)
- * @method static Builder|Member whereEmail($value)
- * @method static Builder|Member whereGender($value)
- * @method static Builder|Member whereLastAccessAt($value)
- * @method static Builder|Member whereMemberId($value)
- * @method static Builder|Member whereName($value)
- * @method static Builder|Member wherePassword($value)
- * @method static Builder|Member whereStatus($value)
- * @method static Builder|Member whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|Member withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Member withoutTrashed()
+ * @method   static                         Builder|Member newModelQuery()
+ * @method   static                         Builder|Member newQuery()
+ * @method   static                         \Illuminate\Database\Query\Builder|Member onlyTrashed()
+ * @method   static                         Builder|Member query()
+ * @method   static                         Builder|Member whereAuthToken($value)
+ * @method   static                         Builder|Member whereBirthday($value)
+ * @method   static                         Builder|Member whereCreatedAt($value)
+ * @method   static                         Builder|Member whereDeletedAt($value)
+ * @method   static                         Builder|Member whereEmail($value)
+ * @method   static                         Builder|Member whereGender($value)
+ * @method   static                         Builder|Member whereLastAccessAt($value)
+ * @method   static                         Builder|Member whereMemberId($value)
+ * @method   static                         Builder|Member whereName($value)
+ * @method   static                         Builder|Member wherePassword($value)
+ * @method   static                         Builder|Member whereStatus($value)
+ * @method   static                         Builder|Member whereUpdatedAt($value)
+ * @method   static                         \Illuminate\Database\Query\Builder|Member withTrashed()
+ * @method   static                         \Illuminate\Database\Query\Builder|Member withoutTrashed()
  * @mixin Eloquent
  */
 class Member extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
@@ -64,18 +64,18 @@ class Member extends Model implements AuthenticatableContract, AuthorizableContr
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;
-// todo HasApiTokens を試す
+    // todo HasApiTokens を試す
     public $table = 'members';
 
     protected $primaryKey          = 'member_id';
     public const AUTH_TOKEN_NAME   = 'auth_token';
     public const AUTH_TOKEN_LENGTH = 80;
 
-    public const STATUS_DISABLE = 0;
-    public const STATUS_ENABLE    = 1;
+    public const STATE_DISABLE  = 0;
+    public const STATE_ENABLE   = 1;
     public const STATUS_LIST    = [
-        self::STATUS_DISABLE => '無効',
-        self::STATUS_ENABLE  => '有効',
+        self::STATE_DISABLE => '無効',
+        self::STATE_ENABLE  => '有効',
     ];
 
     protected static function boot(): void

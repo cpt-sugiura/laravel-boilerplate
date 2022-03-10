@@ -32,7 +32,7 @@ abstract class BaseFormRequest extends FormRequest
     /**
      * @return Validator
      */
-    protected function getValidatorInstance()
+    protected function getValidatorInstance(): Validator
     {
         $validator =  parent::getValidatorInstance();
         $validator->setValueNames($this->values());
@@ -57,7 +57,7 @@ abstract class BaseFormRequest extends FormRequest
      */
     public function validated($key = null, $default = null): array
     {
-        $validated = parent::validated($key, $default );
+        $validated = parent::validated($key, $default);
 
         return array_merge($validated, array_key_snake($validated));
     }

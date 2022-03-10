@@ -32,7 +32,7 @@ class VideoStream
     private function open(): void
     {
         if (! ($this->stream = fopen($this->path, 'rb'))) {
-            die('Could not open stream for reading');
+            exit('Could not open stream for reading');
         }
     }
 
@@ -56,7 +56,7 @@ class VideoStream
             $c_end   = $this->end;
 
             [, $range] = explode('=', $_SERVER['HTTP_RANGE'], 2);
-            if (strpos($range, ',') !== false) {
+            if (str_contains($range, ',')) {
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
                 header("Content-Range: bytes $this->start-$this->end/$size");
                 exit;

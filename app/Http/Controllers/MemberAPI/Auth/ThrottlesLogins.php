@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\AdminBrowserAPI\Auth;
+namespace App\Http\Controllers\MemberAPI\Auth;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Cache\RateLimiter;
@@ -11,35 +11,38 @@ trait ThrottlesLogins
     /**
      * Determine if the user has too many failed login attempts.
      *
+     * @param  Request $request
      * @return bool
      */
-    protected function hasTooManyLoginAttempts(): bool
+    protected function hasTooManyLoginAttempts(Request $request): bool
     {
         return $this->limiter()->tooManyAttempts(
-            $this->throttleKey(), $this->maxAttempts()
+            $this->throttleKey($request), $this->maxAttempts()
         );
     }
 
     /**
      * Increment the login attempts for the user.
      *
+     * @param  Request $request
      * @return void
      */
-    protected function incrementLoginAttempts(): void
+    protected function incrementLoginAttempts(Request $request): void
     {
         $this->limiter()->hit(
-            $this->throttleKey(), $this->decayMinutes() * 60
+            $this->throttleKey($request), $this->decayMinutes() * 60
         );
     }
 
     /**
      * Clear the login locks for the given user credentials.
      *
+     * @param  Request $request
      * @return void
      */
-    protected function clearLoginAttempts(): void
+    protected function clearLoginAttempts(Request $request): void
     {
-        $this->limiter()->clear($this->throttleKey());
+        $this->limiter()->clear($this->throttleKey($request));
     }
 
     /**

@@ -32,7 +32,7 @@ abstract class BasePresenter implements Arrayable, JsonSerializable, Jsonable
      * @throws JsonException
      * @return string
      */
-    public function toJson($options = 0)
+    public function toJson($options = 0): string
     {
         return json_encode($this->jsonSerialize(), JSON_THROW_ON_ERROR | $options, 512);
     }

@@ -5,16 +5,25 @@ namespace App\Http\Controllers\MemberAPI;
 use App\Http\Controllers\ApiResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Models\Eloquents\Member\Member;
+use Auth;
+use Illuminate\Auth\SessionGuard;
 
 abstract class BaseMemberController extends Controller
 {
     use ApiResponseTrait;
 
-    protected function loginMember(): Member
+    protected function guard(): SessionGuard
     {
-        /** @var Member|null $member */
-        $member = auth('member_api')->user();
+        return Auth::guard('web');
+    }
 
-        return $member;
+    protected function loginUser(): ?Member
+    {
+        $user = Auth::guard('web')->user();
+        if ($user instanceof Member) {
+            return $user;
+        }
+
+        return null;
     }
 }

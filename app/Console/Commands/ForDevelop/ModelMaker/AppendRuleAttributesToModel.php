@@ -4,9 +4,9 @@ namespace App\Console\Commands\ForDevelop\ModelMaker;
 
 use App\Console\BaseCommand;
 use App\Models\Eloquents\BaseEloquent;
-
 use function class_basename;
 use function config;
+use Doctrine\DBAL\Exception;
 
 class AppendRuleAttributesToModel extends BaseCommand
 {
@@ -27,6 +27,7 @@ class AppendRuleAttributesToModel extends BaseCommand
     /**
      * Execute the console command.
      *
+     * @throws Exception
      * @return mixed
      */
     public function handle(): int
@@ -49,12 +50,14 @@ class AppendRuleAttributesToModel extends BaseCommand
         $replacedContent = $this->replacer($content, $attributeMap);
 
         file_put_contents($modelFilePath, $replacedContent);
+
         return static::SUCCESS;
     }
 
     /**
      * @param  BaseEloquent $model
-     * @return array        {columnName => comment}[]
+     * @throws Exception
+     * @return array|null   {columnName => comment}[]
      */
     protected function getCommentMapFromTable(BaseEloquent $model): ?array
     {

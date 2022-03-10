@@ -62,13 +62,13 @@ class AppTcpdf
     /**
      * 出力文字を設定する
      * @param string        $_text      文字列
-     * @param int           $_x         X座標
-     * @param int           $_y         Y座標
+     * @param int|float     $_x         X座標
+     * @param int|float     $_y         Y座標
      * @param RgbColor|null $_fontColor
-     * @param int           $_h         高さ
-     * @param int           $fontSize
+     * @param int|float     $_h         高さ
+     * @param int|null      $fontSize
      */
-    public function setText(string $_text, int | float $_x, int | float $_y, RgbColor $_fontColor = null, int | float $_h = 0, int $fontSize = null): void
+    public function setText(string $_text, int|float $_x, int|float $_y, RgbColor $_fontColor = null, int|float $_h = 0, int $fontSize = null): void
     {
         $_fontColor ??= new RgbColor(0, 0, 0);
         $fontSize && $this->fpdi->SetFontSize($fontSize);
@@ -87,7 +87,7 @@ class AppTcpdf
      * @param int|float     $_h         高さ
      * @param int|float     $fontSize
      */
-    public function setTextWrap(string $_text, int | float $_x, int | float $_y, int | float $w, RgbColor $_fontColor = null, int | float $_h = 0, int | float $fontSize = 9): void
+    public function setTextWrap(string $_text, int|float $_x, int|float $_y, int|float $w, RgbColor $_fontColor = null, int|float $_h = 0, int|float $fontSize = 9): void
     {
         $_fontColor ??= new RgbColor(0, 0, 0);
         $this->fpdi->SetFontSize($fontSize);
@@ -109,16 +109,16 @@ class AppTcpdf
             $_x,
             $_y,
             $r,
-            $angstr = 0,
-            $angend = 360,
-            $style = '',
+            $angstr     = 0,
+            $angend     = 360,
+            $style      = '',
             $line_style = ['color' => $lineColor->forFpdiArray()],
             $fill_color =  [],
-            $nc = 2
+            $nc         = 2
         );
     }
 
-    public function setCell($x, $y, int | float $w, int | float $h, $option = null, RgbColor $fillColor = null, ): void
+    public function setCell($x, $y, int|float $w, int|float $h, $option = null, RgbColor $fillColor = null): void
     {
         $fillColor ??= new RgbColor(255, 255, 255);
         $this->fpdi->SetXY($x, $y);
@@ -131,7 +131,7 @@ class AppTcpdf
      * 追加するフォントを取得する
      * @return string|false
      */
-    public function getFont(): bool | string
+    public function getFont(): bool|string
     {
         return TCPDF_FONTS::addTTFfont($this->fontFileName);
     }
@@ -176,7 +176,7 @@ class AppTcpdf
         $fpdi->SetDrawColor(0, 0, 0);
     }
 
-    public function setCellText(string $_text, int | float $_x, int | float $_y, int | float $w, int | float $_h = 0, int | float $fontSize = null): void
+    public function setCellText(string $_text, int|float $_x, int|float $_y, int|float $w, int|float $_h = 0, int|float $fontSize = null): void
     {
         $oldFontSize     = $this->fpdi->getFontSizePt();
         $currentFontSize = $fontSize ?? $oldFontSize;

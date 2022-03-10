@@ -69,7 +69,7 @@ class Admin extends Model implements AuthenticatableContract, AuthorizableContra
     protected static function boot()
     {
         parent::boot();
-        self::saving(fn ($admin) => $admin->remember_token = $admin->remember_token ?? Str::random(32));
+        self::saving(static fn (self $admin) => $admin->remember_token = $admin->remember_token ?? Str::random(32));
     }
 
     public const ASSETS_STORAGE_DISK_KEY = 'admin_auth_assets_storage';

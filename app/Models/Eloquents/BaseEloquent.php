@@ -4,6 +4,7 @@ namespace App\Models\Eloquents;
 
 use App\Http\Presenters\SelectOptionsPresenter;
 use Closure;
+use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -20,7 +21,10 @@ abstract class BaseEloquent extends Model
 {
     use BulkInsert;
 
-    /** このクラスの名前。外部に見せる等で日本語を想定 */
+    /**
+     * このクラスの名前。外部に見せる等で日本語を想定
+     * @throws Exception
+     */
     public static function getNaturalLanguageName(): string
     {
         $connection = (new static())->getConnection();
@@ -40,9 +44,9 @@ abstract class BaseEloquent extends Model
      * @return SelectOptionsPresenter
      */
     public static function createSelectOptionsPresenter(
-        $label = 'name',
-        $orderBy = null,
-        $ascOrDesc = 'asc'
+        string $label = 'name',
+        string|null $orderBy = null,
+        string $ascOrDesc = 'asc'
     ): SelectOptionsPresenter {
         $orderBy = $orderBy ?? (new static())->getKeyName();
 
@@ -143,7 +147,7 @@ abstract class BaseEloquent extends Model
      * @param array                $newThroughTgtIds    更新後のhasManyThroughで参照しているキー全て
      * @param string|string[]|null $reloadRelationNames
      */
-    public function updateHasManyThroughRelations(HasManyThrough $hasManyThrough, array $newThroughTgtIds, array | string $reloadRelationNames=null): void
+    public function updateHasManyThroughRelations(HasManyThrough $hasManyThrough, array $newThroughTgtIds, array|string $reloadRelationNames=null): void
     {
         $throughModel                        = $hasManyThrough->getParent();
         $thisKeyInThroughModel               = $hasManyThrough->getFirstKeyName();
@@ -156,8 +160,8 @@ abstract class BaseEloquent extends Model
         collect($newThroughTgtIds)->whereNotIn(null, $alreadyExistThroughModelIds)
             ->each(
                 function ($newRelateThroughTgtId) use ($thisKeyInThroughModel, $hasManyThroughTgtKeyInThroughModel, $throughModel) {
-                    $newThroughModel = new $throughModel();
-                    $newThroughModel->$thisKeyInThroughModel = $this->getKey();
+                    $newThroughModel                                      = new $throughModel();
+                    $newThroughModel->$thisKeyInThroughModel              = $this->getKey();
                     $newThroughModel->$hasManyThroughTgtKeyInThroughModel = $newRelateThroughTgtId;
                     $newThroughModel->saveOrFail();
                 }

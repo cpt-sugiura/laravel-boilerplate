@@ -4,12 +4,9 @@ namespace App\Console\Commands\ForDevelop;
 
 use DB;
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Table;
-use FilesystemIterator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use RecursiveDirectoryIterator;
 use Str;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -48,11 +45,6 @@ class DumpModelFromDB extends Command
     }
 
     /**
-     * @var AbstractSchemaManager
-     */
-    private AbstractSchemaManager $schemaManager;
-
-    /**
      * 実行内容
      *
      * @throws Exception
@@ -60,13 +52,13 @@ class DumpModelFromDB extends Command
      */
     public function handle(): void
     {
-        $this->schemaManager = DB::getDoctrineSchemaManager();
-        $this->schemaManager->getDatabasePlatform()
+        $schemaManager = DB::getDoctrineSchemaManager();
+        $schemaManager->getDatabasePlatform()
             ->registerDoctrineTypeMapping('geometry', 'string');
         if ($this->option('table')) {
-            $this->tgtTables = [$this->schemaManager->listTableDetails($this->option('table'))];
+            $this->tgtTables = [$schemaManager->listTableDetails($this->option('table'))];
         } elseif ($this->option('all')) {
-            $this->tgtTables = $this->schemaManager->listTables();
+            $this->tgtTables = $schemaManager->listTables();
         } else {
             $this->error('--all オプションを付けるか、-t [テーブル名] でテーブル名を指定する必要があります');
         }
@@ -94,8 +86,8 @@ class DumpModelFromDB extends Command
                     if ($tableName === 'migrations') {
                         return [];
                     }
-                    $modelName = ucfirst(Str::camel(Str::singular($table->getName())));
-                    $modelFilePath = config('infyom.laravel_generator.path.model').$modelName.'.php';
+                    $modelName          = ucfirst(Str::camel(Str::singular($table->getName())));
+                    $modelFilePath      = config('infyom.laravel_generator.path.model').$modelName.'.php';
                     $modelNamespacePath = str_replace('\\', '\\\\', config('infyom.laravel_generator.namespace.model').'\\'.$modelName);
 
                     return [

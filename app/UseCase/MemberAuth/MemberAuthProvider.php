@@ -2,7 +2,7 @@
 
 namespace App\UseCase\MemberAuth;
 
-use App\Models\Eloquents\Member;
+use App\Models\Eloquents\Member\Member;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Support\Str;
 
@@ -11,7 +11,7 @@ class MemberAuthProvider extends EloquentUserProvider
     /**
      * Retrieve a user by the given credentials.
      *
-     * @param  array        $credentials
+     * @param  array       $credentials
      * @return Member|null
      */
     public function retrieveByCredentials(array $credentials): ?Member

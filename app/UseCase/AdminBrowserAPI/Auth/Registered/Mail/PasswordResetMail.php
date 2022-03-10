@@ -2,7 +2,6 @@
 
 namespace App\UseCase\AdminBrowserAPI\Auth\Registered\Mail;
 
-use App\ConstantValues\Format;
 use App\Mail\BaseMailable;
 use Carbon\Carbon;
 
@@ -24,7 +23,7 @@ class PasswordResetMail extends BaseMailable
      * @param Carbon $expiredAt
      * @param string $name
      */
-    public function __construct(string $token, Carbon $expiredAt, $name = '')
+    public function __construct(string $token, Carbon $expiredAt, string $name = '')
     {
         parent::__construct();
         $this->token     = $token;

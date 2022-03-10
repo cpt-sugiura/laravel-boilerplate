@@ -34,23 +34,24 @@ class MakeTestData extends BaseCommand
     /**
      * Execute the console command.
      *
-     * @return int
      * @throws Exception
      * @throws \Exception
+     * @return int
      */
     public function handle(): int
     {
-        if($this->option('table')) {
+        if ($this->option('table')) {
             $classNames = [$this->option('table')];
-        } elseif($this->option('all')) {
+        } elseif ($this->option('all')) {
             $classNames = self::getEloquentClassNames();
         } else {
             $this->error('--all オプションを付けるか、-t [テーブル名] でテーブル名を指定する必要があります');
+
             return static::FAILURE;
         }
 
         $n = $this->option('count');
-        foreach($classNames as $className) {
+        foreach ($classNames as $className) {
             $this->info($className);
             $this->main($className, $n);
         }
@@ -60,37 +61,37 @@ class MakeTestData extends BaseCommand
 
     private function makeStringTestData(Column $col): string
     {
-        $base    = ($col->getComment() ?? $col->getName()) . '_' . Str::random(4);
+        $base    = ($col->getComment() ?? $col->getName()).'_'.Str::random(4);
         $trimmed = substr($base, -$col->getLength());
 
         return iconv('UTF-8', 'UTF-8//IGNORE', $trimmed);
     }
 
     /**
-     * @param  Column  $col
-     * @param  array   $casts
-     * @return string|int|null
+     * @param  Column          $col
+     * @param  array           $casts
      * @throws \Exception
+     * @return string|int|null
      */
     protected function getTestValue(Column $col, array $casts): int|string|null
     {
         $colName = $col->getName();
-        if(!$col->getNotnull() && random_int(1, 100) <= 25) {
+        if (! $col->getNotnull() && random_int(1, 100) <= 25) {
             $val = null;
         } else {
             $val = match ($casts[$colName]) {
                 'string' => $this->makeStringTestData($col),
-                'date' => date('Y-m-d H:i:s', random_int(strtotime('-1 months'), strtotime('+1 months'))),
-                'integer' => random_int(0, 10000),
-                'float' => random_int(0, 10000),
+                'date'   => date('Y-m-d H:i:s', random_int(strtotime('-1 months'), strtotime('+1 months'))),
+                'integer', 'float' => random_int(0, 10000),
             };
         }
+
         return $val;
     }
 
     /**
-     * @param  string  $className
-     * @param  int     $n
+     * @param  string     $className
+     * @param  int        $n
      * @throws Exception
      * @throws \Exception
      */
@@ -103,13 +104,13 @@ class MakeTestData extends BaseCommand
         $casts    = $model->getCasts();
         $testData = collect();
         $bar      = $this->createProgressBar($n);
-        for($i = 0; $i < $n; $i++) {
+        for ($i = 0; $i < $n; ++$i) {
             $td = [];
-            foreach($columns as $col) {
+            foreach ($columns as $col) {
                 $td[$col->getName()] = $this->getTestValue($col, $casts);
             }
             $testData->push((new $className())->forceFill($td));
-            if($testData->count() >= 1000) {
+            if ($testData->count() >= 1000) {
                 $model::bulkInsert($testData);
                 $testData = collect();
             }
@@ -134,24 +135,24 @@ class MakeTestData extends BaseCommand
         // 見つかったファイルパスを元にクラス名一覧を作る
         $classNames = [];
         /** @var SplFileInfo $fileInfo */
-        foreach($files->getIterator() as $fileInfo) {
+        foreach ($files->getIterator() as $fileInfo) {
             $classNames[] = str_replace(
                 // ファイルパスを名前空間に入れ替え、拡張子を除去
-                [app_path('Models/Eloquents'), '/', ".php"],
+                [app_path('Models/Eloquents'), '/', '.php'],
                 ['App\\Models\\Eloquents', '\\', ''],
                 $fileInfo->getRealPath()
             );
         }
         // クラス名の中から Eloquent を継承したクラスのみを抜き出す
         $eloquentClassNames = [];
-        foreach($classNames as $className){
+        foreach ($classNames as $className) {
             try {
                 // クラス名からインスタンスを作成。 Eloquent を継承しているか確認
                 $instance = new $className();
-                if($instance instanceof \Illuminate\Database\Eloquent\Model) {
+                if ($instance instanceof \Illuminate\Database\Eloquent\Model) {
                     $eloquentClassNames[] = $className;
                 }
-            } catch(\Error $exception) {
+            } catch (\Error $exception) {
                 // インスタンス化できない対象について new を行った際のエラーを握りつぶす
                 // abstract class や trait が引っかかりやすい
             }

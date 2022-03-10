@@ -17,7 +17,7 @@ class DiskFree extends BaseCommand
         $dfByte   = disk_free_space('/');
         $dtByte   = disk_total_space('/');
         $usedByte = $dtByte - $dfByte;
-        if ($dfByte !== false && $dfByte < 1 * self::GB) {
+        if ($dfByte !== false && $dfByte < self::GB) {
             dev_slack_log()->warning(implode("\n", [
                 'ディスク残り容量について警告。',
                 '使用率：'.number_format($usedByte / self::GB, 3)

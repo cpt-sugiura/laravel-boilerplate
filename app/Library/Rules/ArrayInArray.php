@@ -19,7 +19,7 @@ class ArrayInArray implements Rule
         $this->haystack = $haystack;
     }
 
-    public function passes($attribute, $values)
+    public function passes($attribute, $values): bool
     {
         if (! is_array($values)) {
             return false;
