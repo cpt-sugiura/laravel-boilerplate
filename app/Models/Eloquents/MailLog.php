@@ -3,37 +3,37 @@
 namespace App\Models\Eloquents;
 
 use App\Models\Eloquents\BaseEloquent as Model;
-use Illuminate\Support\Carbon;
 
-/**
- * @property int    mail_log_id
- * @property string subject
- * @property string message_id
- * @property Carbon $send_at
- * @property string from
- * @property string to
- * @property string content_type
- * @property string charset
- * @property string return_path
- * @property string mime_version
- * @property string content_transfer_encoding
- * @property string received
- * @property string headers
- * @property string content
- * @property string storage_path
- * @property Carbon created_at
- * @property Carbon updated_at
- */
 class MailLog extends Model
 {
     public $table = 'mail_logs';
-
     protected $primaryKey = 'mail_log_id';
 
-    public $fillable = [
+
+    public $guarded = [
+        'mail_log_id',
+        'created_at',
+        'updated_at',
     ];
 
     protected $casts =[
-        'send_at' => 'datetime'
+        'mail_log_id' => 'integer',
+        'subject' => 'string',
+        'message_id' => 'string',
+        'return_path' => 'string',
+        'from' => 'string',
+        'to' => 'string',
+        'content_type' => 'string',
+        'charset' => 'string',
+        'mime_version' => 'string',
+        'content_transfer_encoding' => 'string',
+        'received' => 'string',
+        'headers' => 'string',
+        'content' => 'string',
+        'storage_path' => 'string',
+        'send_at' => 'date',
+        'created_at' => 'date',
+        'updated_at' => 'date',
     ];
+
 }

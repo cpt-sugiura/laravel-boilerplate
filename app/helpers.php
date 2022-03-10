@@ -152,7 +152,7 @@ if (! function_exists('array_key_camel')) {
         $results = [];
         foreach ($array as $key => $value) {
             if (is_array($value) && $isRecursive) {
-                $results[Str::camel($key)] = array_key_camel($value);
+                $results[Str::camel($key)] = array_key_camel($value, true);
             } else {
                 $results[Str::camel($key)] = $value;
             }
@@ -204,25 +204,6 @@ if (! function_exists('array_key_add_prefix')) {
         return $results;
     }
 }
-if (! function_exists('before_insert_required_rule')) {
-    /**
-     * バリデーションルールを表現する配列ないし文字列にrequiredルールを追加する.
-     * nullableが定義されている場合は追加をしない
-     * @param  array|string  $rule
-     * @return array|string
-     */
-    function before_insert_required_rule(array|string $rule): array|string
-    {
-        /* @var string|array $rule */
-        if (is_string($rule) && !str_contains($rule, 'nullable')) {
-            $rule = 'required|'.$rule;
-        } elseif (is_array($rule) && ! in_array('nullable', $rule, true)) {
-            $rule = array_merge(['required'], $rule);
-        }
-
-        return $rule;
-    }
-}
 
 if (! function_exists('loose_secure_asset')) {
     /**
@@ -272,13 +253,6 @@ if (! function_exists('mb_wordwrap')) {
         }
 
         return $result;
-    }
-}
-
-if (! function_exists('is_production')) {
-    function is_production(): bool
-    {
-        return config('app.env') === config('app.in_production_env_name');
     }
 }
 

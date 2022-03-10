@@ -67,13 +67,6 @@ class DumpModelFromDB extends Command
             $this->tgtTables = [$this->schemaManager->listTableDetails($this->option('table'))];
         } elseif ($this->option('all')) {
             $this->tgtTables = $this->schemaManager->listTables();
-            // clean up
-            $schemaFilesPath = config('infyom.laravel_generator.path.schema_files');
-            if (file_exists($schemaFilesPath) && is_dir($schemaFilesPath)) {
-                foreach (new RecursiveDirectoryIterator($schemaFilesPath, FilesystemIterator::SKIP_DOTS) as $file) {
-                    unlink($file);
-                }
-            }
         } else {
             $this->error('--all オプションを付けるか、-t [テーブル名] でテーブル名を指定する必要があります');
         }
@@ -106,8 +99,7 @@ class DumpModelFromDB extends Command
                     $modelNamespacePath = str_replace('\\', '\\\\', config('infyom.laravel_generator.namespace.model').'\\'.$modelName);
 
                     return [
-                        "php artisan dump:infyom:schema ${modelName} --fromTable --tableName=${tableName} --save",
-                        "php artisan infyom:model ${modelName} --fieldsFile=${modelName}.json",
+                        "php artisan dev:dump-simple-model-by-dbal --table=${tableName}",
                         "php artisan dev:replace-model-rules ${modelName}",
                         "php artisan dev:append-model-rule-attributes ${modelNamespacePath}",
                         "php artisan dev:append-model-soft-delete ${modelNamespacePath}",

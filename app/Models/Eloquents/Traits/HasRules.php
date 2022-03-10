@@ -20,6 +20,24 @@ trait HasRules
      */
     public static function createRules(): array
     {
+        /**
+         * バリデーションルールを表現する配列ないし文字列にrequiredルールを追加する.
+         * nullableが定義されている場合は追加をしない
+         * @param  array|string  $rule
+         * @return array|string
+         */
+        function before_insert_required_rule(array|string $rule): array|string
+        {
+            /* @var string|array $rule */
+            if (is_string($rule) && !str_contains($rule, 'nullable')) {
+                $rule = 'required|'.$rule;
+            } elseif (is_array($rule) && ! in_array('nullable', $rule, true)) {
+                $rule = array_merge(['required'], $rule);
+            }
+
+            return $rule;
+        }
+
         return collect(static::rules())->map(
             static function ($rule) {
                 return before_insert_required_rule($rule);

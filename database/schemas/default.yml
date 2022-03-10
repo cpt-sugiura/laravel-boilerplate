@@ -64,17 +64,12 @@ member_password_reset_tokens:
 
 member_device_tokens:
   comment: 会員用デバイストークン
-  relations:
-    - foreign: member_id
+  foreign_keys:
+    - columns: member_id
       references: member_id
-      on: members
-      onUpdate: cascade
-      onDelete: cascade
-  indexes:
-    default_index:
-      columns:
-        - deleted_at
-      type: index
+      table: members
+      onUpdateAction: cascade
+      onDeleteAction: cascade
   columns:
     member_device_token_id: bigIncrements
     member_id: unsignedBigInteger
