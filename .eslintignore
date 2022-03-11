@@ -1,2 +1,6 @@
 public
 node_modules
+webpack.mix.js
+.eslintrc.js
+gitHooks
+production-build

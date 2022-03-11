@@ -1,0 +1,17 @@
+$sidebar-width: 240;
+$header-height: 3em;
+
+.app-frame{
+    display: flex;
+    .drawer {
+        width: $sidebar-width;
+        flex-shrink: 0;
+    }
+    .content: {
+        flex-grow: 1;
+        padding: theme.spacing(3);
+        padding-top: `calc(${HEADER_HEIGHT} + ${theme.spacing(3)}px)`;
+        max-width: `calc(100% - ${SIDEBAR_WIDTH}px)`;
+    },
+
+}

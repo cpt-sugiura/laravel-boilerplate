@@ -1,12 +1,12 @@
 import React, { FormEvent } from 'react';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { ColBox } from '@/common/component/ColBox';
 import { csrfToken } from '@/admin/repository/html/HtmlHead';
-import TextField, { TextFieldProps } from '@material-ui/core/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { errorColor, primaryColor } from '@/admin/theme';
 import { AppLoading } from '@/common/component/AppLoading';
-import { RouteComponentProps } from 'react-router';
-import { NavLink } from 'react-router-dom';
+import {NavLink, useMatch, matchPath} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router';
 import { Logo } from '@/admin/_WhenNotLogin/Logo';
 import { useAdminAxios } from '@/admin/hook/API/useAdminAxios';
 
@@ -31,13 +31,14 @@ const Control: React.FC<{ isLoading: boolean; isSuccess: boolean }> = ({ isLoadi
   return <Button type={'submit'}>パスワード再設定</Button>;
 };
 
-export const RunPasswordResetPage: React.FC<RouteComponentProps<{ token: string }>> = (props) => {
+export const RunPasswordResetPage: React.FC = () => {
+  let { token } = useParams();
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [authParam, setAuthParam] = React.useState<AuthFormInputs>({
     email: '',
     password: '',
     passwordConfirm: '',
-    token: props.match.params.token,
+    token: token || '',
   });
   const makeHandleOnChange: (name: string) => TextFieldProps['onChange'] = (name) => (e) => {
     setAuthParam({ ...authParam, [name]: e.target.value });

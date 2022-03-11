@@ -1,6 +1,6 @@
-import FormControl, { FormControlProps } from '@material-ui/core/FormControl';
-import Select, { SelectProps } from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import FormControl, { FormControlProps } from '@mui/material/FormControl';
+import Select, { SelectProps } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import React, { useEffect, useState } from 'react';
 import { useTrans } from '@/lang/useLangMsg';
 import { arrUniq } from '@/common/helper';

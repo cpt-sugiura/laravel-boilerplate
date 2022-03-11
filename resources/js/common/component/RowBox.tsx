@@ -1,5 +1,5 @@
 import React from 'react';
-import Box, { BoxProps } from '@material-ui/core/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 
 export const RowBox = React.memo(RowBoxComponent);
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Fab from '@material-ui/core/Fab';
-import CloseIcon from '@material-ui/icons/Close';
-import AddIcon from '@material-ui/icons/Add';
-import Grid from '@material-ui/core/Grid';
+import Fab from '@mui/material/Fab';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import Grid from '@mui/material/Grid';
 import { CSSProperties, PropsWithChildren } from 'react';
 
 type AppIncreaseOrDecreasePaperProps<T> = {

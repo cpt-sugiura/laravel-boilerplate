@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
 import { RowBox } from '@/common/component/RowBox';
-import Button from '@material-ui/core/Button';
-import { useHistory } from 'react-router';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router';
 import { SearchBtn } from '@/admin/component/_common/SearchBtn';
 import { ResetBtn } from '@/admin/component/_common/ResetBtn';
 import { useAppRouting } from '@/admin/Router';
@@ -22,7 +22,7 @@ export const AdminSearchBox = React.memo(AdminSearchBoxComponent);
  * @constructor
  */
 function AdminSearchBoxComponent(props: Props): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [searchBox, setSearchBox] = useState({
     name: '',
     ...props.defaultSearchBoxValues,
@@ -56,7 +56,7 @@ function AdminSearchBoxComponent(props: Props): JSX.Element {
         </Grid>
         <Grid item xs={4} />
         <Grid item xs={2}>
-          <Button onClick={() => history.push(AppRouting.adminCreate.path)}>管理者作成</Button>
+          <Button onClick={() => navigate(AppRouting.adminCreate.path)}>管理者作成</Button>
         </Grid>
       </Grid>
     </Paper>

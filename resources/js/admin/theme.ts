@@ -1,6 +1,9 @@
-import { createTheme } from '@material-ui/core/styles';
-import { PaletteOptions, SimplePaletteColorOptions } from '@material-ui/core/styles/createPalette';
-import { Color } from '@material-ui/core';
+import {createTheme} from '@mui/material/styles';
+import {
+  PaletteOptions,
+  SimplePaletteColorOptions
+} from '@mui/material/styles/createPalette';
+import {Color} from '@mui/material';
 
 export const primaryThinColor = '';
 export const primaryColor: Partial<SimplePaletteColorOptions> & Partial<Color> = {
@@ -69,7 +72,6 @@ export const grayColor: Color = {
 };
 
 const ThemePalette: PaletteOptions = {
-  type: 'light',
   primary: primaryColor,
   action: {
     active: 'rgba(0,0,0,0.54)',
@@ -78,7 +80,7 @@ const ThemePalette: PaletteOptions = {
     selected: 'rgba(0,0,0, 0.14)',
     disabled: 'rgba(0,0,0, 0.26)',
   },
-  background: { paper: '#fff', default: '#fafafa' },
+  background: {paper: '#fff', default: '#fafafa'},
   common: {
     black: '#000',
     white: '#fff',
@@ -95,7 +97,6 @@ const ThemePalette: PaletteOptions = {
     primary: 'rgba(0,0,0,0.87)',
     secondary: 'rgba(0,0,0,0.54)',
     disabled: 'rgba(0,0,0,0.38)',
-    hint: 'rgba(0,0,0,0.38)',
   },
   tonalOffset: 0.2,
 };
@@ -119,149 +120,197 @@ export const theme = createTheme({
       fontSize: '1rem',
     },
   },
-  overrides: {
+  components: {
     MuiAccordion: {
-      root: {
-        margin: '16px 0',
+      styleOverrides: {
+        root: {
+          margin: '16px 0',
+        },
       },
     },
     MuiButton: {
-      root: {
-        textTransform: 'none', // ボタン内アルファベット文字を大文字変換しない
-        height: '100%',
-        width: '100%',
+      styleOverrides: {
+        root: {
+          textTransform: 'none', // ボタン内アルファベット文字を大文字変換しない
+          height: '100%',
+          width: '100%',
+        },
       },
+      defaultProps: {
+        color: 'primary',
+        variant: 'contained',
+      }
     },
     MuiCard: {
-      root: {
-        maxHeight: '100%',
-        overflow: 'auto',
-        padding: '8px',
+      styleOverrides: {
+        root: {
+          maxHeight: '100%',
+          overflow: 'auto',
+          padding: '8px',
+        },
       },
     },
     MuiCardContent: {
-      root: {
-        padding: '8px',
-        '&:last-child': {
-          paddingBottom: '8px',
+      styleOverrides: {
+        root: {
+          padding: '8px',
+          '&:last-child': {
+            paddingBottom: '8px',
+          },
         },
       },
     },
     MuiCardHeader: {
-      root: {
-        padding: '8px',
+      styleOverrides: {
+        root: {
+          padding: '8px',
+        },
       },
     },
     MuiContainer: {
-      root: {
-        padding: '.25em',
+      styleOverrides: {
+        root: {
+          padding: '.25em',
+        },
       },
     },
     MuiFab: {
-      root: {
-        marginLeft: '.25em',
-        marginRight: '.25em',
+      styleOverrides: {
+        root: {
+          marginLeft: '.25em',
+          marginRight: '.25em',
+        },
+      },
+      defaultProps: {
+        size: 'medium',
       },
     },
     MuiFormControl: {
-      root: {
-        width: '100%',
+      styleOverrides: {
+        root: {
+          width: '100%',
+        },
+      },
+      defaultProps: {
+        variant: 'outlined',
       },
     },
     MuiIcon: {
-      root: {
-        display: 'flex',
+      styleOverrides: {
+        root: {
+          display: 'flex',
+        },
       },
     },
     MuiPaper: {
-      root: {
-        '&.form-paper': {
-          padding: '1%',
+      styleOverrides: {
+        root: {
+          '&.form-paper': {
+            padding: '1%',
+          },
         },
       },
     },
     MuiRadio: {
-      input: {
-        fontSize: '14px',
+      styleOverrides: {
+        root: {
+          fontSize: '14px',
+        },
       },
     },
     MuiTab: {
-      textColorInherit: {
-        opacity: 1,
+      styleOverrides: {
+        textColorInherit: {
+          opacity: 1,
+        },
       },
     },
     MuiTableCell: {
-      root: {
-        padding: '0.25em 0.5em',
-        borderLeft: '1px solid rgba(0, 0, 0, 0.25)',
-        borderRight: '1px solid rgba(0, 0, 0, 0.25)',
-        borderBottom: '1px solid rgba(0, 0, 0, 0.25)',
-        whiteSpace: 'pre',
+      styleOverrides: {
+        root: {
+          padding: '0.25em 0.5em',
+          borderLeft: '1px solid rgba(0, 0, 0, 0.25)',
+          borderRight: '1px solid rgba(0, 0, 0, 0.25)',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.25)',
+          whiteSpace: 'pre',
+        },
       },
     },
     MuiTableHead: {
-      root: {
-        backgroundColor: primaryColor[50],
-        whiteSpace: 'nowrap',
+      styleOverrides: {
+        root: {
+          backgroundColor: primaryColor[50],
+          whiteSpace: 'nowrap',
+        },
       },
     },
     MuiTableRow: {
-      root: {
-        '.MuiTableRow-hover&:hover': {
-          backgroundColor: primaryColor[50],
+      styleOverrides: {
+        root: {
+          '.MuiTableRow-hover&:hover': {
+            backgroundColor: primaryColor[50],
+          },
         },
       },
     },
     MuiTypography: {
-      root: {
-        '&.error': {
-          color: errorColor.main,
+      styleOverrides: {
+        root: {
+          '&.error': {
+            color: errorColor.main,
+          },
         },
       },
     },
-  },
-  props: {
-    MuiButton: {
-      color: 'primary',
-      variant: 'contained',
-    },
     MuiCollapse: {
-      timeout: 'auto',
-      unmountOnExit: true,
-    },
-    MuiFormControl: {
-      variant: 'outlined',
+      defaultProps: {
+        timeout: 'auto',
+        unmountOnExit: true,
+      },
     },
     MuiFormHelperText: {
-      margin: 'dense',
+      defaultProps: {
+        margin: 'dense',
+      },
     },
     MuiGrid: {
-      spacing: 4,
-    },
-    MuiFab: {
-      size: 'medium',
+      defaultProps: {
+        spacing: 4,
+      },
     },
     MuiInputLabel: {
-      margin: 'dense',
-      variant: 'outlined',
-      shrink: true,
+      defaultProps: {
+        margin: 'dense',
+        variant: 'outlined',
+        shrink: true,
+      },
     },
     MuiList: {
-      dense: true,
+      defaultProps: {
+        dense: true,
+      },
     },
     MuiOutlinedInput: {
-      margin: 'dense',
-      notched: true,
+      defaultProps: {
+        margin: 'dense',
+        notched: true,
+      },
     },
     MuiSelect: {
-      variant: 'outlined',
+      defaultProps: {
+        variant: 'outlined',
+      },
     },
     MuiSwitch: {
-      size: 'medium',
+      defaultProps: {
+        size: 'medium',
+      },
     },
     MuiTextField: {
-      variant: 'outlined',
-      autoComplete: 'off',
+      defaultProps: {
+        variant: 'outlined',
+        autoComplete: 'off',
+      },
     },
   },
   spacing: 4,

@@ -1,11 +1,11 @@
-import TextField, { TextFieldProps } from '@material-ui/core/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useTrans } from '@/lang/useLangMsg';
-import { InputBaseProps } from '@material-ui/core/InputBase';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { InputBaseProps } from '@mui/material/InputBase';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 type AppFormTextFieldProps = TextFieldProps & {
   name: string;

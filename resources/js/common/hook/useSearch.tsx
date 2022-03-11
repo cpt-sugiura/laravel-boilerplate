@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import qs from 'qs';
 import { AxiosInstance } from 'axios';
 
@@ -44,7 +44,7 @@ export function useSearch<T = never>(
   defaultSearchRequest: Partial<SearchRequestObject> = {},
   withoutWriteURL = false
 ): UseSearchReturn<T> {
-  const historyPush = useHistory().push;
+  const navigate = useNavigate();
   /** 現在の状態で検索する関数 */
   const _searchTableData = useCallback(
     (
@@ -70,13 +70,13 @@ export function useSearch<T = never>(
           const pushQuery = JSON.parse(JSON.stringify(_query));
           Object.keys(pushQuery.search).forEach((key) => pushQuery.search[key] || delete pushQuery.search[key]);
           pushQuery.page = pushQuery.page || undefined;
-          !withoutWriteURL && historyPush({ search: qs.stringify(pushQuery) });
+          !withoutWriteURL && navigate({ search: qs.stringify(pushQuery) });
         })
         .finally(() => {
           _setIsSearching(false);
         });
     },
-    [axiosInstance, historyPush]
+    [axiosInstance, navigate]
   );
 
   const [query, setQuery] = useState<SearchRequestObject>({

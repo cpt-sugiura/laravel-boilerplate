@@ -1,5 +1,5 @@
 import React, { CSSProperties, PropsWithChildren } from 'react';
-import Box, { BoxProps } from '@material-ui/core/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 
 type HasIsolateItemBoxProps = {
   BoxProps?: BoxProps;

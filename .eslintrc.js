@@ -1,22 +1,52 @@
 module.exports = {
-    root: true,
-    parserOptions: {
-        "parser": "@typescript-eslint/parser"
+  env: {
+    browser: true,
+    es6: true,
+    node: true,
+    jest: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'google',
+    'plugin:prettier/recommended',
+  ],
+  settings: {
+    react: {
+      version: 'detect',
     },
-    env: {
-        es6: true,
-        node: true,
-        browser: true
+  },
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
     },
-    extends: [
-        "eslint:recommended",
-        "google",
+    ecmaVersion: 2018,
+    sourceType: 'module',
+  },
+  plugins: ['react', '@typescript-eslint', 'import-access'],
+  rules: {
+    'require-jsdoc': 'off',
+    'valid-jsdoc': 'off',
+    'complexity': ['error', 20],
+    'no-console': ['error', {allow: ['warn', 'error']}],
+    'react/jsx-uses-react': 'error',
+    'react/jsx-uses-vars': 'error',
+    'react/prop-types': 'off',
+    'no-invalid-this': 'off',
+    'prettier/prettier': [
+      'error',
+      {
+        printWidth: 120, // 行の最大長
+        tabWidth: 2, // 1 インデントあたりの空白数
+        useTabs: false,
+        semi: true, // 式の最後にセミコロンを付加する
+        singleQuote: true, // 引用符としてシングルクオートを使用する
+      },
     ],
-    globals: {
-    },
-    rules: {
-        "max-len": "off",
-        "complexity": ["error", 10],
-        "no-console": ["warn", { "allow": ["warn", "error"] }],
-    }
+    '@typescript-eslint/ban-types': 'off',
+    'import-access/jsdoc': ['error'],
+  },
 };

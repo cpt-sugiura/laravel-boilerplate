@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import CardActions from '@material-ui/core/CardActions';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Popper, { PopperProps } from '@material-ui/core/Popper';
-import Button, { ButtonProps } from '@material-ui/core/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import CardActions from '@mui/material/CardActions';
+import CircularProgress from '@mui/material/CircularProgress';
+import Popper, { PopperProps } from '@mui/material/Popper';
+import Button, { ButtonProps } from '@mui/material/Button';
 
 type ConfirmBtnProps = {
   isExecuting?: boolean;
@@ -52,7 +52,7 @@ const ConfirmBtn: React.FC<ConfirmBtnProps> = (props) => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button onClick={() => setConfirmPopAnchor(null)} color="default">
+            <Button onClick={() => setConfirmPopAnchor(null)} className="back-btn">
               {props.confirmCancelBtnLabel}
             </Button>
             <Button color="secondary" onClick={runConfirmAction}>

@@ -1,11 +1,11 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 import { SearchTable } from '@/common/component/search/SearchTable';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import Grid from '@material-ui/core/Grid';
-import { useHistory } from 'react-router';
-import Button from '@material-ui/core/Button';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router';
+import Button from '@mui/material/Button';
 import { makeRoutePath, useAppRouting } from '@/admin/Router';
 
 type AdminSearchTableRow = {
@@ -31,9 +31,9 @@ type AdminSearchTableProps = {
 };
 
 const ControlCell = ({ adminId }: { adminId: number }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routing = useAppRouting();
-  const handleClick = () => history.push(makeRoutePath(routing.adminShow, { adminId }));
+  const handleClick = () => navigate(makeRoutePath(routing.adminShow, { adminId }));
   return (
     <Grid container>
       <Grid item xs={6}>

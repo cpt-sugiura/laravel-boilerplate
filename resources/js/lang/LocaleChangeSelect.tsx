@@ -1,15 +1,15 @@
 import React from 'react';
 import { isLocale, localeOptions, useLangLocaleContext } from '@/lang/messageLoader';
 import './LocaleChangeSelect.scss';
-import { useUserAxios } from '@/user/hook/API/useUserAxios';
 import { AppSelect, AppSelectProps } from '@/common/component/form/AppSelect';
+import {AxiosInstance} from "axios";
 
 type LocaleChangerProps = {
   label?: string;
+  axiosInstance: AxiosInstance
 };
-export const LocaleChangeSelect: React.FC<LocaleChangerProps> = ({ label }) => {
+export const LocaleChangeSelect: React.FC<LocaleChangerProps> = ({ label, axiosInstance }) => {
   const { langLocale, setLangLocale } = useLangLocaleContext();
-  const { axiosInstance } = useUserAxios();
   const handleChange: AppSelectProps['onChange'] = (e) => {
     if (isLocale(e.target.value)) {
       setLangLocale(e.target.value);

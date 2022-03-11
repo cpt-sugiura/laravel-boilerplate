@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import Box, { BoxProps as OriginBoxProps } from '@material-ui/core/Box';
+import Box, { BoxProps as OriginBoxProps } from '@mui/material/Box';
 
 export const ColBox = React.memo(ColBoxComponent);
 

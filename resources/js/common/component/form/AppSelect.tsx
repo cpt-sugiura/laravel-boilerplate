@@ -1,9 +1,9 @@
-import FormControl, { FormControlProps } from '@material-ui/core/FormControl';
+import FormControl, { FormControlProps } from '@mui/material/FormControl';
 import React from 'react';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select, { SelectProps } from '@material-ui/core/Select';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectProps } from '@mui/material/Select';
+import FormHelperText from '@mui/material/FormHelperText';
 import { useTrans } from '@/lang/useLangMsg';
 import { SelectOption } from '@/common/const/System';
 

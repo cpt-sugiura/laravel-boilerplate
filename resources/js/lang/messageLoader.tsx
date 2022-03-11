@@ -1,14 +1,13 @@
 import ja from './messages/ja.yml';
 import en from './messages/en.yml';
 import React, { PropsWithChildren, useContext, useState } from 'react';
-import { getDefaultLang } from '@/user/repository/html/HtmlHead';
 import { SelectOption } from '@/common/const/System';
 
 export type AppLocale = 'ja' | 'en'; // 今後はパイプで en などが増える
 
 export const isLocale = (str: unknown): str is AppLocale => typeof str === 'string' && ['ja', 'en'].includes(str);
 const defaultLocale = ((): AppLocale => {
-  const defaultLang = getDefaultLang();
+  const defaultLang = document.querySelector('html')?.lang;
   if (isLocale(defaultLang)) {
     return defaultLang;
   }

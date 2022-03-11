@@ -1,8 +1,8 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
-import { AppBar } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { AppBar } from '@mui/material';
 import { useLocation } from 'react-router';
 import { isRouteKey, RouteDefine, RouteKey, useAppRouting } from '@/admin/Router';
+import './AppHeader.scss'
 
 const updateTitle = (routing: Record<RouteKey, RouteDefine>, currentUrl: string): string | undefined => {
   const matchRouteKey: RouteKey = Object.keys(routing).filter((routeKey): routeKey is RouteKey => {
@@ -14,24 +14,7 @@ const updateTitle = (routing: Record<RouteKey, RouteDefine>, currentUrl: string)
   return title;
 };
 
-const useStyles = makeStyles(() => ({
-  'app-header': {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: '1em',
-    flexWrap: 'wrap',
-    height: '3em',
-    top: 0,
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
-
 const AppHeader: React.FC<{ appBarStyle?: CSSProperties }> = ({ appBarStyle }) => {
-  const classes = useStyles();
-
   const location = useLocation();
   const routing = useAppRouting();
   const [title, setTitle] = useState(updateTitle(routing, location.pathname));
@@ -40,8 +23,8 @@ const AppHeader: React.FC<{ appBarStyle?: CSSProperties }> = ({ appBarStyle }) =
   }, [location.pathname]);
 
   return (
-    <AppBar className={classes['app-header']} style={appBarStyle} elevation={0}>
-      <span>{title}</span>
+    <AppBar className={'app-header'} style={appBarStyle} elevation={0}>
+      <span className={'title'}>{title}</span>
     </AppBar>
   );
 };

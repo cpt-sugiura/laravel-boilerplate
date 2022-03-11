@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { PropsWithChildren } from 'react';
-import Paper from '@material-ui/core/Paper';
-import TableContainer from '@material-ui/core/TableContainer';
-import Table from '@material-ui/core/Table';
+import Paper from '@mui/material/Paper';
+import TableContainer from '@mui/material/TableContainer';
+import Table from '@mui/material/Table';
 import { AppTableHead, SearchTableHeadCell } from './AppTableHead';
-import TableBody from '@material-ui/core/TableBody';
+import TableBody from '@mui/material/TableBody';
 import AppPagination from './AppPagination';
 
 export type SearchTableProps = PropsWithChildren<{

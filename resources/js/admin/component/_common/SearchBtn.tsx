@@ -1,5 +1,5 @@
-import Button, { ButtonProps } from '@material-ui/core/Button';
-import SearchIcon from '@material-ui/icons/Search';
+import Button, { ButtonProps } from '@mui/material/Button';
+import SearchIcon from '@mui/icons-material/Search';
 import React from 'react';
 
 export type SearchBtnProps = {

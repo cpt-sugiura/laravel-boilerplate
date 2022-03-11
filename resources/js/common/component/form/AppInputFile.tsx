@@ -1,11 +1,11 @@
-import OutlinedInput, { OutlinedInputProps } from '@material-ui/core/OutlinedInput';
-import FormControl, { FormControlProps } from '@material-ui/core/FormControl';
-import InputLabel, { InputLabelProps } from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import OutlinedInput, { OutlinedInputProps } from '@mui/material/OutlinedInput';
+import FormControl, { FormControlProps } from '@mui/material/FormControl';
+import InputLabel, { InputLabelProps } from '@mui/material/InputLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 import React from 'react';
 import './AppInputFile.scss';
 import { useTrans } from '@/lang/useLangMsg';
-import { InputBaseProps } from '@material-ui/core/InputBase';
+import { InputBaseProps } from '@mui/material/InputBase';
 
 export type AppInputFileProps = Omit<InputBaseProps, 'onChange'> & {
   errorMessage?: string;

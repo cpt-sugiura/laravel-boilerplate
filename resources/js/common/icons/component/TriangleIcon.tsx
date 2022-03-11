@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import Icon from '@material-ui/core/Icon';
+import Icon from '@mui/material/Icon';
 
 export const TriangleIcon = React.memo(TriangleIconComponent);
 type Props = {

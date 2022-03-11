@@ -1,6 +1,7 @@
-import { Route, Switch } from 'react-router-dom';
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router';
+import {Route, UNSAFE_NavigationContext} from 'react-router-dom';
+import {Routes} from 'react-router';
+import React, {useContext, useEffect} from 'react';
+import { BrowserHistory } from "history";
 import { useTitle } from '@/admin/hook/useTitle';
 import { HomePage } from '@/admin/pages/HomePage';
 import { NotFound } from '@/admin/pages/NotFound';
@@ -71,20 +72,28 @@ function RouterComponent(): JSX.Element {
   useEffect(() => {
     updateDocumentTitle(location.pathname);
   }, []);
-  useHistory().listen((location) => updateDocumentTitle(location.pathname));
+  const navigation = useContext(UNSAFE_NavigationContext).navigator as BrowserHistory;
+  React.useLayoutEffect(() => {
+    if (navigation) {
+      navigation.listen((locationListener) =>
+        updateDocumentTitle(locationListener.location.pathname)
+      );
+    }
+  }, [navigation]);
+
 
   return (
-    <Switch>
-      <Route exact path={AppRouting.home.path} component={HomePage} />
+    <Routes>
+      <Route path={AppRouting.home.path} element={HomePage} />
 
 
-      <Route exact path={AppRouting.adminSearch.path} component={AdminSearchPage} />
-      <Route exact path={AppRouting.adminCreate.path} component={AdminCreatePage} />
-      <Route exact path={AppRouting.adminShow.path} component={AdminShowPage} />
+      <Route path={AppRouting.adminSearch.path} element={AdminSearchPage} />
+      <Route path={AppRouting.adminCreate.path} element={AdminCreatePage} />
+      <Route path={AppRouting.adminShow.path} element={AdminShowPage} />
       <Route path="*">
         <NotFound />
       </Route>
-    </Switch>
+    </Routes>
   );
 }
 export { AppRouter, useAppRouting, makeRoutePath, useIsActiveRouteGroup };

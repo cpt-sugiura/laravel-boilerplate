@@ -1,16 +1,15 @@
 import React from 'react';
 import { isLocale, localeOptions, useLangLocaleContext } from '@/lang/messageLoader';
 import './LocaleChangeSelect.scss';
-import Popover from '@material-ui/core/Popover';
-import MenuItem, { MenuItemProps } from '@material-ui/core/MenuItem';
+import Popover from '@mui/material/Popover';
+import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';
 import { useTrans } from '@/lang/useLangMsg';
 import { TriangleIcon } from '@/common/icons/component/TriangleIcon';
-import { useUserAxios } from '@/user/hook/API/useUserAxios';
 import { SelectOption } from '@/common/const/System';
+import {AxiosInstance} from "axios";
 
-export const LocaleChangeMenuItem: React.FC = () => {
+export const LocaleChangeMenuItem: React.FC<{axiosInstance: AxiosInstance}> = ({ axiosInstance }) => {
   const { setLangLocale, langLocale } = useLangLocaleContext();
-  const { axiosInstance } = useUserAxios();
   const changeLocale = (locale: SelectOption) => {
     if (isLocale(locale.value)) {
       setLangLocale(locale.value);

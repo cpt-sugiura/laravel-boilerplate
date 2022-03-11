@@ -1,11 +1,11 @@
-import Button from '@material-ui/core/Button';
-import { useHistory } from 'react-router';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router';
 import React from 'react';
 
 export const ReturnBtn: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
-    <Button color="default" onClick={() => history.goBack()}>
+    <Button className="back-btn" onClick={() => navigate(-1)}>
       戻る
     </Button>
   );

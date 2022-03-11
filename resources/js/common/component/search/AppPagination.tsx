@@ -1,9 +1,9 @@
-import Box, { BoxProps } from '@material-ui/core/Box';
-import Pagination from '@material-ui/lab/Pagination';
+import Box, { BoxProps } from '@mui/material/Box';
 import React, { ChangeEvent } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useTrans } from '@/lang/useLangMsg';
 import './AppPagination.scss';
+import {Pagination} from "@mui/material";
 
 export default React.memo(AppPagination);
 

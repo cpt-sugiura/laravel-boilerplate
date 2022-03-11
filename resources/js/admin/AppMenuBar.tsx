@@ -1,17 +1,16 @@
 import React from 'react';
-import Drawer from '@material-ui/core/Drawer';
-import { NavLink, NavLinkProps } from 'react-router-dom';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import Drawer from '@mui/material/Drawer';
+import { NavLink } from 'react-router-dom';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { HEADER_HEIGHT, SIDEBAR_WIDTH } from '@/admin/AppFrame';
-import HomeIcon from '@material-ui/icons/Home';
+import HomeIcon from '@mui/icons-material/Home';
 import { useLogout } from '@/admin/hook/useLogout';
 import { AppLoading } from '@/common/component/AppLoading';
-import { RouteDefine, RouteMenuGroup, useAppRouting, useIsActiveRouteGroup } from '@/admin/Router';
-import SecurityIcon from '@material-ui/icons/Security';
+import { RouteDefine, RouteMenuGroup, useAppRouting } from '@/admin/Router';
+import SecurityIcon from '@mui/icons-material/Security';
 
 type ListItemLinkProps = {
   children?: JSX.Element;
@@ -21,15 +20,10 @@ type ListItemLinkProps = {
 };
 const EmptyIcon = () => <div className={'MuiSvgIcon-root'} />;
 
-const useMakeIsActive =
-  (group: RouteMenuGroup): NavLinkProps['isActive'] =>
-  (match, location): boolean => {
-    return useIsActiveRouteGroup(group, location.pathname);
-  };
-const ListItemLink: React.FC<ListItemLinkProps> = ({ children, route, group, title }) => {
-  const isActive = useMakeIsActive(group);
+const ListItemLink: React.FC<ListItemLinkProps> = ({ children, route, title }) => {
+  // const isActive = useIsActiveRouteGroup(group, );
   return (
-    <NavLink activeClassName={'nav-link-active'} isActive={isActive} to={route.path}>
+    <NavLink className={(isActive)=>isActive? 'nav-link-active' : ''} to={route.path}>
       <ListItem button>
         <ListItemIcon>{children || <EmptyIcon />}</ListItemIcon>
         <ListItemText primary={title || route.title} />

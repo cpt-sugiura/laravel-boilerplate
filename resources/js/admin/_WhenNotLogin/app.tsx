@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter,  Route,  } from 'react-router-dom';
 import { theme } from '@/admin/theme';
-import { ThemeProvider } from '@material-ui/core/styles';
 import ErrorBoundary from '@/common/ErrorBoundary';
 import { DialogMessagesProvider } from '@/common/context/DialogMessageContext';
 import { LoginPage } from '@/admin/_WhenNotLogin/LoginPage';
@@ -11,6 +10,8 @@ import './not_login.scss';
 import { RunPasswordResetPage } from '@/admin/_WhenNotLogin/RunPasswordResetPage';
 import { LangLocaleProvider, messages, useLangLocaleContext } from '@/lang/messageLoader';
 import { IntlProvider } from 'react-intl';
+import {ThemeProvider} from "@mui/material";
+import {Redirect, Routes} from "react-router";
 
 /**
  * ルートコンポーネント
@@ -23,22 +24,16 @@ function App() {
       <BrowserRouter basename={'admin'}>
         <ThemeProvider theme={theme}>
           <DialogMessagesProvider>
-            <Switch>
+            <Routes>
               <Route path="/login">
                 <LoginPage />
               </Route>
               <Route path="/send_password_reset">
                 <SendPasswordResetPage />
               </Route>
-              <Route path="/password/reset/:token" component={RunPasswordResetPage} />
-              <Route path="*">
-                <Redirect
-                  to={{
-                    pathname: '/login',
-                  }}
-                />
-              </Route>
-            </Switch>
+              <Route path="/password/reset/:token" element={RunPasswordResetPage} />
+              <Route path="*" element={() => <Redirect to="/login" />}/>
+            </Routes>
           </DialogMessagesProvider>
         </ThemeProvider>
       </BrowserRouter>

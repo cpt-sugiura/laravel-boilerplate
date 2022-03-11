@@ -1,0 +1,28 @@
+@import "resources/sass/variables";
+@import "resources/sass/admin/variables";
+
+.app-dialog {
+    .dialog-title {
+        margin: 0;
+        padding: $base-gap-size * 2;
+        min-width: 25vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .close-button {
+            color: $primary-500;
+            padding: 0
+        }
+
+        .dialog-content {
+            margin: 0;
+            padding: $base-gap-size * 2;
+        }
+
+        .dialog-actions {
+            margin: 0;
+            padding: $base-gap-size;
+        }
+    }
+}

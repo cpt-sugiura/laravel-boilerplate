@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useWillUnmount } from 'beautiful-react-hooks';
 
 type ResponseMessage = {
   hasError: boolean;
@@ -37,9 +36,11 @@ const makeUseAxios = (createBaseRepository: (config?: AxiosRequestConfig) => Axi
     const [responseErrors, setResponseErrors] = React.useState<Record<keyof RequestType, string[]>>();
 
     const unmounted = useRef(false);
-    useWillUnmount(() => {
-      unmounted.current = true;
-    });
+    useEffect(()=>{
+      return () => {
+        unmounted.current = true;
+      }
+    }, []);
 
     const requestInterceptor = (request: AxiosRequestConfig): AxiosRequestConfig => {
       !unmounted.current && setIsLoading(true);

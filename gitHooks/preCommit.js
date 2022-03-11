@@ -27,7 +27,7 @@ function gitBranch() {
     console.error('');
     console.error('masterブランチにcommitしようとしています');
     console.error('');
-    process.exit(1);
+    // process.exit(1);
   }
   // 現在参照しているブランチが特定の正規表現に一致しないならば
   const category = ['admin', 'user', 'database', 'event'].join('|');

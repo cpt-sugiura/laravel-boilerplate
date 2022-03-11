@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import CardActions from '@material-ui/core/CardActions';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Popper, { PopperProps } from '@material-ui/core/Popper';
-import Button, { ButtonProps } from '@material-ui/core/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import CardActions from '@mui/material/CardActions';
+import CircularProgress from '@mui/material/CircularProgress';
+import Popper, { PopperProps } from '@mui/material/Popper';
+import Button, { ButtonProps } from '@mui/material/Button';
 import { errorColor } from '@/admin/theme';
 
 type DeleteBtnProps = {
@@ -38,7 +38,7 @@ const DeleteBtn = (props: DeleteBtnProps) => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button color="default" onClick={() => setDeletePopAnchor(null)}>
+            <Button className="back-btn" onClick={() => setDeletePopAnchor(null)}>
               取消
             </Button>
             <Button

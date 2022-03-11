@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SelectProps } from '@material-ui/core/Select';
+import { SelectProps } from '@mui/material/Select';
 import { AppSelect, AppSelectProps } from './AppSelect';
 import { useFormContext } from 'react-hook-form';
 

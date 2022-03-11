@@ -1,15 +1,15 @@
 import React from 'react';
 import { useMessageDialog } from '@/common/context/DialogMessageContext';
 import { makeErrorResponseMessage, makeSuccessResponseMessage } from '@/common/hook/makeUseAxios';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { makeRoutePath, useAppRouting } from '@/admin/Router';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Button, { ButtonProps } from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import FormControl from '@material-ui/core/FormControl';
+import Button, { ButtonProps } from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import FormControl from '@mui/material/FormControl';
 import { AppLoading } from '@/common/component/AppLoading';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@mui/material/Paper';
 import { HasIsolateItemBox } from '@/common/component/HasIsolateItemBox';
 import { ReturnBtn } from '@/admin/component/_common/ReturnBtn';
 import { useAdminAxios } from '@/admin/hook/API/useAdminAxios';
@@ -33,7 +33,7 @@ const useSchema = () => {
 
 const AdminCreatePage: React.FC = () => {
   const { setDialog } = useMessageDialog();
-  const history = useHistory();
+  const navigate = useNavigate();
   const AppRouting = useAppRouting();
 
   const submitAxios = useAdminAxios<AdminFormInputTypes>();
@@ -43,7 +43,7 @@ const AdminCreatePage: React.FC = () => {
       .post(`/admin`, fields)
       .then((response) => {
         setDialog('作成結果', <ResponseMessageTypography msg={makeSuccessResponseMessage(response)} />);
-        history.push(makeRoutePath(AppRouting.adminShow, { adminId: response.data.body.adminId }));
+        navigate(makeRoutePath(AppRouting.adminShow, { adminId: response.data.body.adminId }));
       })
       .catch((error) => setDialog('作成結果', <ResponseMessageTypography msg={makeErrorResponseMessage(error)} />));
   };
@@ -58,7 +58,7 @@ const AdminCreatePage: React.FC = () => {
         <ReturnBtn />
       </HasIsolateItemBox>
       <FormProvider {...formMethods}>
-        <form onSubmit={formMethods.handleSubmit(onSubmit)} autoComplete="off">
+        <form onSubmit={formMethods.handleSubmit(() => createAction(formMethods.getValues()))} autoComplete="off">
           <Paper className={'form-paper'}>
             <AdminFormFields />
             <Grid item xs={12}>

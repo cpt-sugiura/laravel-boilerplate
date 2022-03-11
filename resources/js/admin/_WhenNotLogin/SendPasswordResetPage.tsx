@@ -1,8 +1,8 @@
 import React, { FormEvent } from 'react';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { ColBox } from '@/common/component/ColBox';
 import { csrfToken } from '@/admin/repository/html/HtmlHead';
-import TextField, { TextFieldProps } from '@material-ui/core/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { errorColor, primaryColor } from '@/admin/theme';
 import { AppLoading } from '@/common/component/AppLoading';
 import { NavLink } from 'react-router-dom';
@@ -59,7 +59,7 @@ const SendPasswordResetPage: React.FC = () => {
         {!isLoading ? <Button type={'submit'}>パスワードリセットメール送信</Button> : <AppLoading message="送信中" />}
       </form>
       <NavLink to={'/login'}>
-        <Button color="default">ログインページに戻る</Button>
+        <Button className="back-btn">ログインページに戻る</Button>
       </NavLink>
     </ColBox>
   );

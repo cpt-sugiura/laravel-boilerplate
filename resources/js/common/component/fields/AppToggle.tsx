@@ -1,9 +1,9 @@
 import React, { CSSProperties, useState } from 'react';
-import FormControl, { FormControlProps } from '@material-ui/core/FormControl';
-import Grid, { GridProps } from '@material-ui/core/Grid';
-import Switch from '@material-ui/core/Switch';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import { SwitchProps } from '@material-ui/core/Switch/Switch';
+import FormControl, { FormControlProps } from '@mui/material/FormControl';
+import Grid, { GridProps } from '@mui/material/Grid';
+import Switch from '@mui/material/Switch';
+import FormHelperText from '@mui/material/FormHelperText';
+import { SwitchProps } from '@mui/material/Switch/Switch';
 export type AppToggleProps = {
   FormControlProps?: FormControlProps;
   SwitchProps?: SwitchProps;

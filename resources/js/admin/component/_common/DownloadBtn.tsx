@@ -1,5 +1,5 @@
-import Button, { ButtonProps as OriginalButtonProps } from '@material-ui/core/Button';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import Button, { ButtonProps as OriginalButtonProps } from '@mui/material/Button';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import React from 'react';
 import { infoColor } from '@/admin/theme';
 import { AppLoading } from '@/common/component/AppLoading';

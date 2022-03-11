@@ -1,6 +1,6 @@
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import React from 'react';
-import { TextFieldProps } from '@material-ui/core/TextField/TextField';
+import { TextFieldProps } from '@mui/material/TextField/TextField';
 
 type TextProps = {
   label: string;

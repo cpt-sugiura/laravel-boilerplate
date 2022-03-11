@@ -1,8 +1,8 @@
 import React from 'react';
 import { RowBox } from '../RowBox';
-import TextField, { TextFieldProps } from '@material-ui/core/TextField';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { BoxProps } from '@material-ui/core/Box';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+import { BoxProps } from '@mui/material/Box';
+import './AppTextFieldRange.scss'
 
 type AppTextFieldRangeProps = {
   startLabel: string;
@@ -20,15 +20,7 @@ type AppTextFieldRangeProps = {
   EndTextFieldProps?: TextFieldProps;
 };
 
-const useStyles = makeStyles({
-  'wavy-line': {
-    marginLeft: '1%',
-    marginRight: '1%',
-    alignSelf: 'center',
-  },
-});
 export const AppTextFieldRange: React.FC<AppTextFieldRangeProps> = (props) => {
-  const styles = useStyles();
   const handleChangeStart: TextFieldProps['onChange'] = (e) => {
     props.emitStartValue({
       target: {
@@ -48,7 +40,7 @@ export const AppTextFieldRange: React.FC<AppTextFieldRangeProps> = (props) => {
   };
 
   return (
-    <RowBox {...props.RootBoxProps}>
+    <RowBox {...props.RootBoxProps} className={`app-text-field-range ${props.RootBoxProps?.className}`}>
       <TextField
         {...props.StartTextFieldProps}
         label={props.startLabel}
@@ -58,7 +50,7 @@ export const AppTextFieldRange: React.FC<AppTextFieldRangeProps> = (props) => {
         value={props.startValue}
         onChange={handleChangeStart}
       />
-      <span className={styles['wavy-line']}>〜</span>
+      <span className={'wavy-line'}>〜</span>
       <TextField
         {...props.EndTextFieldProps}
         label={props.endLabel}

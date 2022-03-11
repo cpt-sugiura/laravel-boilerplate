@@ -1,5 +1,5 @@
-import Button, { ButtonProps } from '@material-ui/core/Button';
-import ClearIcon from '@material-ui/icons/Clear';
+import Button, { ButtonProps } from '@mui/material/Button';
+import ClearIcon from '@mui/icons-material/Clear';
 import React from 'react';
 import { useTrans } from '@/lang/useLangMsg';
 
@@ -9,9 +9,9 @@ export type ResetBtnProps = {
 };
 export const ResetBtn: React.FC<ResetBtnProps> = ({ onClick, className }) => {
   const t = useTrans();
+  // todo color
   return (
     <Button
-      color={'default'}
       style={{ height: 'fit-content', width: 'fit-content' }}
       className={`search-clear control-btn ${className}`}
       onClick={onClick}

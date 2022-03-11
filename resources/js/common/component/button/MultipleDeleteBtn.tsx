@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Button, { ButtonProps } from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
+import Button, { ButtonProps } from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import { useTrans } from '@/lang/useLangMsg';
 import { AppLoading } from '@/common/component/AppLoading';
 
@@ -42,7 +42,7 @@ export const MultipleDeleteBtn: React.FC<MultipleDeleteBtnProps> = (props) => {
         <DialogTitle> {t('app.delete.confirm.title')}</DialogTitle>
         <DialogContent>{props.children || t('app.delete.confirm.msg')}</DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAction} color="default">
+          <Button onClick={handleCloseAction} className="back-btn">
             {t('app.cancel')}
           </Button>
           {!props.isLoading ? (
