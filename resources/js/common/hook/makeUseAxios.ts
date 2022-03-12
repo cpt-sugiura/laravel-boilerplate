@@ -1,5 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { BaseResponse } from '@/@types/API/BaseResponse';
 
 type ResponseMessage = {
   hasError: boolean;
@@ -36,10 +37,10 @@ const makeUseAxios = (createBaseRepository: (config?: AxiosRequestConfig) => Axi
     const [responseErrors, setResponseErrors] = React.useState<Record<keyof RequestType, string[]>>();
 
     const unmounted = useRef(false);
-    useEffect(()=>{
+    useEffect(() => {
       return () => {
         unmounted.current = true;
-      }
+      };
     }, []);
 
     const requestInterceptor = (request: AxiosRequestConfig): AxiosRequestConfig => {
@@ -93,5 +94,9 @@ const getErrorMessages = (e: Partial<AxiosError> & Error): string[] => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isAxiosError = (e: any): e is AxiosError<BaseResponse<any>> =>
+  typeof e === 'object' && e !== null && e.isAxiosError === true;
+
 export type { ResponseMessage };
-export { makeUseAxios, makeSuccessResponseMessage, makeErrorResponseMessage, getErrorMessages };
+export { makeUseAxios, makeSuccessResponseMessage, makeErrorResponseMessage, getErrorMessages, isAxiosError };

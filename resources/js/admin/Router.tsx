@@ -1,7 +1,7 @@
-import {Route, UNSAFE_NavigationContext} from 'react-router-dom';
-import {Routes} from 'react-router';
-import React, {useContext, useEffect} from 'react';
-import { BrowserHistory } from "history";
+import { Route, UNSAFE_NavigationContext } from 'react-router-dom';
+import { Routes } from 'react-router';
+import React, { useContext, useEffect } from 'react';
+import { BrowserHistory } from 'history';
 import { useTitle } from '@/admin/hook/useTitle';
 import { HomePage } from '@/admin/pages/HomePage';
 import { NotFound } from '@/admin/pages/NotFound';
@@ -16,12 +16,7 @@ type RouteDefine = {
   title: string;
   match: (url: string) => boolean; // 主にメニューバーのアクティブ非アクティブの判別用の match
 };
-const RouteKeyList = [
-  'home',
-  'adminSearch',
-  'adminShow',
-  'adminCreate',
-] as const;
+const RouteKeyList = ['home', 'adminSearch', 'adminShow', 'adminCreate'] as const;
 type RouteKey = typeof RouteKeyList[number];
 /** typescript の都合で as RouteKey にしているが実際は不定。不定が RouteKey か確認したい */
 export const isRouteKey = (key: string): key is RouteKey => RouteKeyList.includes(key as RouteKey);
@@ -75,17 +70,13 @@ function RouterComponent(): JSX.Element {
   const navigation = useContext(UNSAFE_NavigationContext).navigator as BrowserHistory;
   React.useLayoutEffect(() => {
     if (navigation) {
-      navigation.listen((locationListener) =>
-        updateDocumentTitle(locationListener.location.pathname)
-      );
+      navigation.listen((locationListener) => updateDocumentTitle(locationListener.location.pathname));
     }
   }, [navigation]);
-
 
   return (
     <Routes>
       <Route path={AppRouting.home.path} element={HomePage} />
-
 
       <Route path={AppRouting.adminSearch.path} element={AdminSearchPage} />
       <Route path={AppRouting.adminCreate.path} element={AdminCreatePage} />

@@ -8,11 +8,7 @@ import { AppFrame } from '@/admin/AppFrame';
 import { AppRouter } from '@/admin/Router';
 import { DialogMessagesProvider } from '@/common/context/DialogMessageContext';
 import { LangLocaleProvider, messages, useLangLocaleContext } from '@/lang/messageLoader';
-import { JaUtils } from '@/common/component/form/LocaleJaDatePicker';
-import jaLocale from 'date-fns/locale/ja';
 import { IntlProvider } from 'react-intl';
-import { LocalizationProvider } from '@mui/lab';
-import {LocalizationProvider} from "@mui/lab";
 
 /**
  * ルートコンポーネント
@@ -25,11 +21,11 @@ function App() {
     <IntlProvider key={langLocale} locale={langLocale} messages={messages[langLocale]}>
       <BrowserRouter basename={'admin'}>
         <ThemeProvider theme={theme}>
-            <DialogMessagesProvider>
-              <AppFrame>
-                <AppRouter />
-              </AppFrame>
-            </DialogMessagesProvider>
+          <DialogMessagesProvider>
+            <AppFrame>
+              <AppRouter />
+            </AppFrame>
+          </DialogMessagesProvider>
         </ThemeProvider>
       </BrowserRouter>
     </IntlProvider>

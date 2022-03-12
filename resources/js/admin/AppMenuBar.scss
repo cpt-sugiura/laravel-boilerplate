@@ -1,0 +1,12 @@
+@import "resources/sass/admin/variables";
+.app-menu-bar {
+    .MuiPaper-root {// todo correct name ?
+        width: $sidebar-width;
+        top: $header-height;
+        height: 100% - $header-height;
+    }
+
+    .list {
+        height: 100%
+    }
+}

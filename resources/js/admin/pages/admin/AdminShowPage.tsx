@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router';
 import { AppLoading } from '@/common/component/AppLoading';
 import { useMessageDialog } from '@/common/context/DialogMessageContext';
-import { makeErrorResponseMessage, makeSuccessResponseMessage } from '@/common/hook/makeUseAxios';
+import { isAxiosError, makeErrorResponseMessage, makeSuccessResponseMessage } from '@/common/hook/makeUseAxios';
 import { DeleteBtn } from '@/admin/component/_common/DeleteBtn';
 import { useAppRouting, makeRoutePath } from '@/admin/Router';
-import Paper, {PapreProps} from '@mui/material/Paper';
+import Paper from '@mui/material/Paper';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Grid from '@mui/material/Grid';
@@ -17,8 +16,8 @@ import { useYup } from '@/common/validation/BaseYup';
 import { useAdminAxios } from '@/admin/hook/API/useAdminAxios';
 import { AdminFormFields, AdminFormInputTypes, toAdminFormInputTypes } from '@/admin/component/admin/AdminFormFields';
 import { ResponseMessageTypography } from '@/common/component/ResponseMessageTypography';
-import {AxiosError} from "axios";
-import {useDidMount} from "beautiful-react-hooks";
+import { useDidMount } from 'beautiful-react-hooks';
+import { useNavigate, useParams } from 'react-router';
 
 type AdminEntity = {
   adminId: number;
@@ -43,7 +42,9 @@ const useSchema = () => {
   });
 };
 
-const AdminDetailPageComponent: React.FC<RouteComponentProps<{ adminId: string }>> = (props) => {
+const AdminDetailPageComponent: React.FC = () => {
+  const { adminId } = useParams<'adminId'>();
+  const navigate = useNavigate();
   const [admin, setAdmin] = React.useState<AdminEntity>({
     adminId: 0,
     name: '',
@@ -59,7 +60,7 @@ const AdminDetailPageComponent: React.FC<RouteComponentProps<{ adminId: string }
   const updateAxios = useAdminAxios<AdminFormInputTypes>();
   const updateAction = (fields: AdminFormInputTypes) => {
     updateAxios.axiosInstance
-      .post(`/admin/${props.match.params.adminId}`, fields)
+      .post(`/admin/${adminId}`, fields)
       .then((response) =>
         setDialog('更新結果', <ResponseMessageTypography msg={makeSuccessResponseMessage(response)} />)
       )
@@ -69,10 +70,10 @@ const AdminDetailPageComponent: React.FC<RouteComponentProps<{ adminId: string }
   const deleteAxios = useAdminAxios();
   const deleteAction = () => {
     deleteAxios.axiosInstance
-      .delete(`admin/${props.match.params.adminId}`)
+      .delete(`admin/${adminId}`)
       .then((response) => {
         setDialog('削除結果', <ResponseMessageTypography msg={makeSuccessResponseMessage(response)} />);
-        props.history.push(makeRoutePath(AppRouting.adminSearch));
+        navigate(makeRoutePath(AppRouting.adminSearch));
       })
       .catch((error) => setDialog('削除結果', <ResponseMessageTypography msg={makeErrorResponseMessage(error)} />));
   };
@@ -80,10 +81,14 @@ const AdminDetailPageComponent: React.FC<RouteComponentProps<{ adminId: string }
   const { axiosInstance, isLoading } = useAdminAxios();
   useDidMount(async (): Promise<void> => {
     try {
-      const response = await axiosInstance.get(`/admin/${props.match.params.adminId}`);
+      const response = await axiosInstance.get(`/admin/${adminId}`);
       setAdmin(response.data.body);
-    } catch (e: AxiosError|Error) {
-      setErrorMessage(`ステータスコード: ${e.response?.status}\n${e.response?.body?.message || e.toString()}`);
+    } catch (e) {
+      if (isAxiosError(e)) {
+        setErrorMessage(`ステータスコード: ${e.response?.status}\n${e.response?.data?.body?.message || e.toString()}`);
+      } else {
+        throw e;
+      }
     }
   });
   const schema = useSchema();
@@ -91,7 +96,7 @@ const AdminDetailPageComponent: React.FC<RouteComponentProps<{ adminId: string }
   useEffect(() => {
     formMethods.reset(toAdminFormInputTypes(admin));
   }, [admin]);
-  const onSubmit: PapreProps['onSubmit'] = formMethods.handleSubmit(() => {
+  const onSubmit = formMethods.handleSubmit(() => {
     updateAction(formMethods.getValues());
   });
 

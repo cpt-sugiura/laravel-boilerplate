@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter,  Route,  } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route } from 'react-router-dom';
 import { theme } from '@/admin/theme';
 import ErrorBoundary from '@/common/ErrorBoundary';
 import { DialogMessagesProvider } from '@/common/context/DialogMessageContext';
@@ -10,8 +10,8 @@ import './not_login.scss';
 import { RunPasswordResetPage } from '@/admin/_WhenNotLogin/RunPasswordResetPage';
 import { LangLocaleProvider, messages, useLangLocaleContext } from '@/lang/messageLoader';
 import { IntlProvider } from 'react-intl';
-import {ThemeProvider} from "@mui/material";
-import {Redirect, Routes} from "react-router";
+import { ThemeProvider } from '@mui/material';
+import { Routes } from 'react-router';
 
 /**
  * ルートコンポーネント
@@ -32,7 +32,7 @@ function App() {
                 <SendPasswordResetPage />
               </Route>
               <Route path="/password/reset/:token" element={RunPasswordResetPage} />
-              <Route path="*" element={() => <Redirect to="/login" />}/>
+              <Route path="*" element={() => <Navigate to="/login" />} />
             </Routes>
           </DialogMessagesProvider>
         </ThemeProvider>

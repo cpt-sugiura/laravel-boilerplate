@@ -36,6 +36,7 @@ module.exports = {
     'react/jsx-uses-vars': 'error',
     'react/prop-types': 'off',
     'no-invalid-this': 'off',
+    'camelcase': 'off',
     'prettier/prettier': [
       'error',
       {

@@ -1,17 +1,18 @@
-$sidebar-width: 240;
-$header-height: 3em;
+@import "resources/sass/admin/variables";
 
-.app-frame{
+
+.app-frame {
     display: flex;
+
     .drawer {
         width: $sidebar-width;
         flex-shrink: 0;
     }
-    .content: {
-        flex-grow: 1;
-        padding: theme.spacing(3);
-        padding-top: `calc(${HEADER_HEIGHT} + ${theme.spacing(3)}px)`;
-        max-width: `calc(100% - ${SIDEBAR_WIDTH}px)`;
-    },
 
+    .content {
+        flex-grow: 1;
+        padding: $admin-base-gap-size * 3;
+        padding-top: $header-height + $admin-base-gap-size * 3;
+        max-width: 100% - $sidebar-width;
+    }
 }

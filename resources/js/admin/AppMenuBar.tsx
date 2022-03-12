@@ -5,7 +5,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { HEADER_HEIGHT, SIDEBAR_WIDTH } from '@/admin/AppFrame';
 import HomeIcon from '@mui/icons-material/Home';
 import { useLogout } from '@/admin/hook/useLogout';
 import { AppLoading } from '@/common/component/AppLoading';
@@ -23,7 +22,7 @@ const EmptyIcon = () => <div className={'MuiSvgIcon-root'} />;
 const ListItemLink: React.FC<ListItemLinkProps> = ({ children, route, title }) => {
   // const isActive = useIsActiveRouteGroup(group, );
   return (
-    <NavLink className={(isActive)=>isActive? 'nav-link-active' : ''} to={route.path}>
+    <NavLink className={(isActive) => (isActive ? 'nav-link-active' : '')} to={route.path}>
       <ListItem button>
         <ListItemIcon>{children || <EmptyIcon />}</ListItemIcon>
         <ListItemText primary={title || route.title} />
@@ -31,17 +30,6 @@ const ListItemLink: React.FC<ListItemLinkProps> = ({ children, route, title }) =
     </NavLink>
   );
 };
-
-const useStyles = makeStyles(() => ({
-  drawerPaper: {
-    width: SIDEBAR_WIDTH,
-    top: HEADER_HEIGHT,
-    height: `calc(100% - ${HEADER_HEIGHT})`,
-  },
-  list: {
-    height: '100%',
-  },
-}));
 
 const LogoutLink: React.FC = () => {
   const { logoutAction, logoutLoading } = useLogout();
@@ -52,17 +40,11 @@ const LogoutLink: React.FC = () => {
   );
 };
 export const AppMenuBar: React.FC = () => {
-  const classes = useStyles();
   const AppRouting = useAppRouting();
 
   return (
-    <Drawer
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-      variant="permanent"
-    >
-      <List classes={{ root: classes.list }}>
+    <Drawer className={'app-menu-bar'} variant="permanent">
+      <List className="list">
         <ListItemLink route={AppRouting.home} group={'home'}>
           <HomeIcon />
         </ListItemLink>

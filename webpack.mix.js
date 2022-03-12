@@ -34,8 +34,8 @@ mix.webpackConfig({
   ],
 })
   .setPublicPath('')
-  .ts('resources/js/user/app.tsx', 'public/js')
-  .sass('resources/sass/user/app.scss', 'public/css')
+  // .ts('resources/js/user/app.tsx', 'public/js')
+  // .sass('resources/sass/user/app.scss', 'public/css')
   .ts('resources/js/admin/app.tsx', 'storage/app/assets/admin/js')
   .sass('resources/sass/admin/app.scss', 'storage/app/assets/admin/css')
   .ts('resources/js/admin/_WhenNotLogin/app.tsx', 'public/assets/admin/js/login.js')
