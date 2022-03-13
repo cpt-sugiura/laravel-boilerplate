@@ -51,7 +51,6 @@ const DeleteBtn: React.FC<DeleteBtnProps> = (props) => {
             </Typography>
           </CardContent>
           <CardActions>
-            {/* todo color */}
             <Button onClick={() => setDeletePopAnchor(null)} className="back-btn">
               {t('app.delete.cancel')}
             </Button>

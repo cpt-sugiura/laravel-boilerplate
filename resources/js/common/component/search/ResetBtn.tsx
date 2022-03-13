@@ -9,7 +9,6 @@ export type ResetBtnProps = {
 };
 export const ResetBtn: React.FC<ResetBtnProps> = ({ onClick, className }) => {
   const t = useTrans();
-  // todo color
   return (
     <Button
       style={{ height: 'fit-content', width: 'fit-content' }}
