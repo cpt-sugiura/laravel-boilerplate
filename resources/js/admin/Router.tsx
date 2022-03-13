@@ -76,14 +76,12 @@ function RouterComponent(): JSX.Element {
 
   return (
     <Routes>
-      <Route path={AppRouting.home.path} element={HomePage} />
+      <Route path={AppRouting.home.path} element={<HomePage />} />
 
-      <Route path={AppRouting.adminSearch.path} element={AdminSearchPage} />
-      <Route path={AppRouting.adminCreate.path} element={AdminCreatePage} />
-      <Route path={AppRouting.adminShow.path} element={AdminShowPage} />
-      <Route path="*">
-        <NotFound />
-      </Route>
+      <Route path={AppRouting.adminSearch.path} element={<AdminSearchPage />} />
+      <Route path={AppRouting.adminCreate.path} element={<AdminCreatePage />} />
+      <Route path={AppRouting.adminShow.path} element={<AdminShowPage />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar } from '@mui/material';
 import { useLocation } from 'react-router';
 import { isRouteKey, RouteDefine, RouteKey, useAppRouting } from '@/admin/Router';
 import './AppHeader.scss';
@@ -23,9 +22,9 @@ const AppHeader: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <AppBar className={'app-header'} elevation={0}>
+    <div className={'app-header'}>
       <span className={'title'}>{title}</span>
-    </AppBar>
+    </div>
   );
 };
 

@@ -25,13 +25,9 @@ function App() {
         <ThemeProvider theme={theme}>
           <DialogMessagesProvider>
             <Routes>
-              <Route path="/login">
-                <LoginPage />
-              </Route>
-              <Route path="/send_password_reset">
-                <SendPasswordResetPage />
-              </Route>
-              <Route path="/password/reset/:token" element={RunPasswordResetPage} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/send_password_reset" element={<SendPasswordResetPage />} />
+              <Route path="/password/reset/:token" element={<RunPasswordResetPage />} />
               <Route path="*" element={() => <Navigate to="/login" />} />
             </Routes>
           </DialogMessagesProvider>

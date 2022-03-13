@@ -3,7 +3,7 @@ import React, { ChangeEvent } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useTrans } from '@/lang/useLangMsg';
 import './AppPagination.scss';
-import {Pagination} from "@mui/material";
+import { Pagination } from '@mui/material';
 
 export default React.memo(AppPagination);
 
@@ -36,7 +36,7 @@ function AppPagination(props: AppPaginationProps) {
       {...props.RootBoxProps}
       className={`app-pagination ${props.RootBoxProps?.className || ''} ${props.fitWidth ? 'fit-width' : ''}`}
     >
-      <div style={{ display: 'inline-flex', margin: '0 auto' }}>
+      <div>
         <Pagination
           count={lastPage}
           page={currentPage}
@@ -45,11 +45,9 @@ function AppPagination(props: AppPaginationProps) {
         />
       </div>
       {props.isLoading && (
-        <div id="loading">
-          <span>
-            {t('searching')}
-            <CircularProgress color="primary" size={'1em'} />
-          </span>
+        <div className="loading">
+          <span>{t('searching')}</span>
+          <CircularProgress color="primary" size={'1.25em'} />
         </div>
       )}
     </Box>

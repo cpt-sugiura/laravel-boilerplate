@@ -1,5 +1,4 @@
 import React from 'react';
-import Drawer from '@mui/material/Drawer';
 import { NavLink } from 'react-router-dom';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -8,8 +7,10 @@ import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import { useLogout } from '@/admin/hook/useLogout';
 import { AppLoading } from '@/common/component/AppLoading';
-import { RouteDefine, RouteMenuGroup, useAppRouting } from '@/admin/Router';
+import { RouteDefine, RouteMenuGroup, useAppRouting, useIsActiveRouteGroup } from '@/admin/Router';
 import SecurityIcon from '@mui/icons-material/Security';
+import Paper from '@mui/material/Paper';
+import { useLocation } from 'react-router';
 
 type ListItemLinkProps = {
   children?: JSX.Element;
@@ -19,13 +20,14 @@ type ListItemLinkProps = {
 };
 const EmptyIcon = () => <div className={'MuiSvgIcon-root'} />;
 
-const ListItemLink: React.FC<ListItemLinkProps> = ({ children, route, title }) => {
-  // const isActive = useIsActiveRouteGroup(group, );
+const ListItemLink: React.FC<ListItemLinkProps> = (props) => {
+  const location = useLocation();
+  const isActive = useIsActiveRouteGroup(props.group, location.pathname);
   return (
-    <NavLink className={(isActive) => (isActive ? 'nav-link-active' : '')} to={route.path}>
+    <NavLink className={() => (isActive ? 'nav-link-active' : '')} to={props.route.path}>
       <ListItem button>
-        <ListItemIcon>{children || <EmptyIcon />}</ListItemIcon>
-        <ListItemText primary={title || route.title} />
+        <ListItemIcon>{props.children || <EmptyIcon />}</ListItemIcon>
+        <ListItemText primary={props.title || props.route.title} />
       </ListItem>
     </NavLink>
   );
@@ -43,7 +45,7 @@ export const AppMenuBar: React.FC = () => {
   const AppRouting = useAppRouting();
 
   return (
-    <Drawer className={'app-menu-bar'} variant="permanent">
+    <Paper className={'app-menu-bar'}>
       <List className="list">
         <ListItemLink route={AppRouting.home} group={'home'}>
           <HomeIcon />
@@ -53,6 +55,6 @@ export const AppMenuBar: React.FC = () => {
         </ListItemLink>
         <LogoutLink />
       </List>
-    </Drawer>
+    </Paper>
   );
 };

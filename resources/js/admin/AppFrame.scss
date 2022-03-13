@@ -3,16 +3,25 @@
 
 .app-frame {
     display: flex;
+    flex-direction: column;
 
-    .drawer {
-        width: $sidebar-width;
-        flex-shrink: 0;
-    }
+    .app-body {
+        display: flex;
 
-    .content {
-        flex-grow: 1;
-        padding: $admin-base-gap-size * 3;
-        padding-top: $header-height + $admin-base-gap-size * 3;
-        max-width: 100% - $sidebar-width;
+        .drawer {
+            width: $sidebar-width;
+            flex-shrink: 0;
+
+            .app-menu-bar {
+                width: $sidebar-width;
+            }
+
+        }
+
+        .content {
+            width: 100%;
+            flex-grow: 1;
+            padding: $admin-base-gap-size * 3;
+        }
     }
 }

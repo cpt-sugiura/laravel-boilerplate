@@ -1,4 +1,5 @@
 @import "resources/sass/variables";
+
 .app-pagination {
     display: inline-flex;
     align-items: baseline;
@@ -9,22 +10,29 @@
 
     &.fitWidth {
         width: fit-content;
-        > *:not(:last-child){
+
+        > *:not(:last-child) {
             margin-right: $base-gap-size;
         }
     }
 
-    #loading {
+    > div {
+        display: inline-flex;
+        margin: 0 auto;
+    }
+
+    .loading {
         position: absolute;
-        background-color: #fafafa;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: $paper-color;
         width: 100%;
         height: 100%;
-
-        span {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
     }
 }
