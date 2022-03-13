@@ -17,4 +17,9 @@ function getMetaContent(name: string): string {
   const meta = document.head.querySelector(`meta[name="${name}"]`);
   return meta instanceof HTMLMetaElement ? meta.content : '';
 }
+
+export const getLoginAdminJSON = (): string => {
+  return getMetaContent('admin-json');
+};
+
 export { csrfToken, getMetaContent };

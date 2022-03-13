@@ -34,6 +34,6 @@ class BaseAdminBrowserAPIController extends Controller
             return sha1($route->uri().$route->getDomain().'|'.$request->ip());
         }
 
-        throw new RuntimeException('要求署名を生成できません。ルートが利用できません。');
+        throw new \RuntimeException('要求署名を生成できません。ルートが利用できません。');
     }
 }

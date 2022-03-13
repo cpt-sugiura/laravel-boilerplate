@@ -6,6 +6,7 @@
         name="viewport"
         content="minimum-scale=1, initial-scale=1, width=device-width"
     />
+    <meta name="admin-json" content="{{ $adminJson }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Nunito:200,600">

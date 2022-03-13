@@ -9,6 +9,7 @@ import { AppRouter } from '@/admin/Router';
 import { DialogMessagesProvider } from '@/common/context/DialogMessageContext';
 import { LangLocaleProvider, messages, useLangLocaleContext } from '@/lang/messageLoader';
 import { IntlProvider } from 'react-intl';
+import { LoginAdminProvider } from '@/admin/context/LoginAdminContext';
 
 /**
  * ルートコンポーネント
@@ -19,15 +20,17 @@ function App() {
 
   return (
     <IntlProvider key={langLocale} locale={langLocale} messages={messages[langLocale]}>
-      <BrowserRouter basename={'admin'}>
-        <ThemeProvider theme={theme}>
-          <DialogMessagesProvider>
-            <AppFrame>
-              <AppRouter />
-            </AppFrame>
-          </DialogMessagesProvider>
-        </ThemeProvider>
-      </BrowserRouter>
+      <LoginAdminProvider>
+        <BrowserRouter basename={'admin'}>
+          <ThemeProvider theme={theme}>
+            <DialogMessagesProvider>
+              <AppFrame>
+                <AppRouter />
+              </AppFrame>
+            </DialogMessagesProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </LoginAdminProvider>
     </IntlProvider>
   );
 }
