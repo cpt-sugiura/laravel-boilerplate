@@ -171,6 +171,19 @@ export const theme = createTheme({
         },
       },
     },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '4px 8px',
+          '> button': {
+            padding: 0,
+          },
+        },
+      },
+    },
     MuiFab: {
       styleOverrides: {
         root: {
