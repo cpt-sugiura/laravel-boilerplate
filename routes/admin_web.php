@@ -4,7 +4,7 @@ use App\Http\Controllers\AdminWeb\Auth\LoginController;
 use App\Http\Controllers\AdminWeb\IndexController;
 use App\Models\Eloquents\Admin\Admin;
 
-Route::get('login', [LoginController::class, 'showLoginForm']);
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 
 Route::get('', IndexController::class);
 Route::middleware('auth:admin_web')->group(static function () {

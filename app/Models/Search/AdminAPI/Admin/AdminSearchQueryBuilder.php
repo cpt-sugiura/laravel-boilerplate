@@ -15,6 +15,7 @@ class AdminSearchQueryBuilder extends BaseSearchQueryBuilder
         return [
             'admins.admin_id',
             'admins.name',
+            'admins.email',
             'admins.created_at',
             'admins.updated_at',
         ];

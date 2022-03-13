@@ -10,5 +10,5 @@ Route::name('auth.')->group(static function () {
 Route::middleware('auth:admin_web')->where([
     'adminId' => '\d+',
 ])->group(static function () {
-    include __DIR__.'admin_browser_api/admin.php';
+    include __DIR__.'/admin_browser_api/admin.php';
 });

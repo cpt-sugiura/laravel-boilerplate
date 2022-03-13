@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { ColBox } from '@/common/component/ColBox';
 import { csrfToken } from '@/admin/repository/html/HtmlHead';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
-import { errorColor, primaryColor } from '@/admin/theme';
+import { errorColor } from '@/admin/theme';
 import { AppLoading } from '@/common/component/AppLoading';
 import { NavLink } from 'react-router-dom';
 import { Logo } from '@/admin/_WhenNotLogin/Logo';
@@ -28,13 +28,7 @@ const SendPasswordResetPage: React.FC = () => {
 
   return (
     <ColBox className="root-container">
-      <form
-        onSubmit={handleSubmit}
-        className="root-form"
-        style={{
-          background: primaryColor[50],
-        }}
-      >
+      <form onSubmit={handleSubmit} className="root-form">
         <Logo />
         <input type={'hidden'} value={csrfToken()} name={'_token'} />
         <ColBox

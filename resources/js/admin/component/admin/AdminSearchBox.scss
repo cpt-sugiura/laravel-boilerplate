@@ -1,0 +1,36 @@
+@import "resources/sass/admin/variables";
+
+.admin-search-box {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $search-box-gap-size;
+    grid-template-areas:
+    "name  email . create-btn"
+    "control control control control";
+
+    .control {
+        grid-area: control;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        button {
+            width: fit-content;
+        }
+
+        :not(:last-child) {
+            margin-right: $search-box-gap-size;
+        }
+
+    }
+
+    .name {
+        grid-area: name;
+    }
+    .email {
+        grid-area: email;
+    }
+
+    .create-btn {
+        grid-area: create-btn;
+    }
+}

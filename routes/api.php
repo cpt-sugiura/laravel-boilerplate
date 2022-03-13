@@ -16,7 +16,7 @@ Route::prefix('debug')->name('debug.')->group(static function () {
     if (config('app.env') === config('app.in_production_env_name')) {
         return;
     }
-    Route::get('image', 'OnlyDevelopApiController@image')->name('image');
+//    Route::get('image', 'OnlyDevelopApiController@image')->name('image');
 });
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

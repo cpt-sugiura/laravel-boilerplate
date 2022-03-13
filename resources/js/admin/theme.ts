@@ -1,9 +1,6 @@
-import {createTheme} from '@mui/material/styles';
-import {
-  PaletteOptions,
-  SimplePaletteColorOptions
-} from '@mui/material/styles/createPalette';
-import {Color} from '@mui/material';
+import { createTheme } from '@mui/material/styles';
+import { PaletteOptions, SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
+import { Color } from '@mui/material';
 
 export const primaryThinColor = '';
 export const primaryColor: Partial<SimplePaletteColorOptions> & Partial<Color> = {
@@ -80,7 +77,7 @@ const ThemePalette: PaletteOptions = {
     selected: 'rgba(0,0,0, 0.14)',
     disabled: 'rgba(0,0,0, 0.26)',
   },
-  background: {paper: '#fff', default: '#fafafa'},
+  background: { paper: '#fff', default: '#fafafa' },
   common: {
     black: '#000',
     white: '#fff',
@@ -139,7 +136,7 @@ export const theme = createTheme({
       defaultProps: {
         color: 'primary',
         variant: 'contained',
-      }
+      },
     },
     MuiCard: {
       styleOverrides: {
@@ -294,6 +291,11 @@ export const theme = createTheme({
       defaultProps: {
         margin: 'dense',
         notched: true,
+      },
+      styleOverrides: {
+        input: {
+          padding: '8px 7px',
+        },
       },
     },
     MuiSelect: {
