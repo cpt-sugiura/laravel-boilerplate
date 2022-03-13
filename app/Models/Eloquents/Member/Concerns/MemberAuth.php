@@ -2,7 +2,8 @@
 
 namespace App\Models\Eloquents\Member\Concerns;
 
-use App\Library\Notifications\MemberPasswordResetNotification;
+use App\Models\Eloquents\Member\Member;
+use App\UseCase\MemberAuth\Notifications\MemberPasswordResetNotification;
 use Auth;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Auth\TokenGuard;
@@ -87,6 +88,6 @@ trait MemberAuth
      */
     public function canUseAccount(): bool
     {
-        return $this->status === self::STATUS_ENABLE;
+        return $this->status === Member::STATE_ENABLE;
     }
 }

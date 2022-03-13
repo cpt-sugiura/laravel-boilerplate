@@ -2,7 +2,7 @@
 
 namespace App\Models\Eloquents\Member\Concerns;
 
-use App\Models\Eloquents\MemberDeviceToken;
+use App\Models\Eloquents\Member\MemberDeviceToken;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait MemberRelations

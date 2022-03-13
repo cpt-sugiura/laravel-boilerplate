@@ -169,4 +169,9 @@ class Admin extends Model implements AuthenticatableContract, AuthorizableContra
             )
         );
     }
+
+    public function canDelete(): bool
+    {
+        return self::count() > 1;
+    }
 }

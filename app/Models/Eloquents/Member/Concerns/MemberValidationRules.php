@@ -5,7 +5,7 @@ namespace App\Models\Eloquents\Member\Concerns;
 use App\ConstantValues\Person;
 use App\Library\Rules\Password\PasswordCheck;
 use App\Library\Rules\UniqueInNotSoftDeleted;
-use App\Models\Eloquents\Member;
+use App\Models\Eloquents\Member\Member;
 use Illuminate\Validation\Rules\In;
 
 /**
@@ -30,7 +30,7 @@ trait MemberValidationRules
     {
         return [
             'oldPassword'        => ['required', new PasswordCheck(Member::getAuthProvider(), auth('api')->user())],
-            'newPassword'        => ['required', 'string', 'min:8', 'max:255',],
+            'newPassword'        => ['required', 'string', 'min:8', 'max:255'],
             'newPasswordConfirm' => ['required', 'string', 'min:8', 'max:255', 'same:newPassword'],
         ];
     }
@@ -49,7 +49,7 @@ trait MemberValidationRules
         return [
             'token'           => 'required',
             'email'           => ['required', 'string', 'max:255', 'email:rfc'],
-            'password'        => ['required', 'string', 'min:8', 'max:255',],
+            'password'        => ['required', 'string', 'min:8', 'max:255'],
             'passwordConfirm' => ['required', 'string', 'min:8', 'max:255', 'same:password'],
         ];
     }
@@ -76,7 +76,7 @@ trait MemberValidationRules
                 'email:rfc',
                 new UniqueInNotSoftDeleted(new Member(), 'email')
             ],
-            'password'        => ['required', 'string', 'min:8', 'max:255',],
+            'password'        => ['required', 'string', 'min:8', 'max:255'],
             'passwordConfirm' => ['required', 'string', 'min:8', 'max:255', 'same:password'],
             'status'          => ['required', new In(array_keys(self::STATUS_LIST))]
         ];
@@ -94,7 +94,7 @@ trait MemberValidationRules
                 'email:rfc',
                 new UniqueInNotSoftDeleted(new Member(), 'email', $currentTgtId)
             ],
-            'password'        => ['nullable', 'string', 'min:8', 'max:255',],
+            'password'        => ['nullable', 'string', 'min:8', 'max:255'],
             'passwordConfirm' => ['nullable', 'string', 'min:8', 'max:255', 'same:password'],
             'status'          => ['nullable', new In(array_keys(self::STATUS_LIST))]
         ];
