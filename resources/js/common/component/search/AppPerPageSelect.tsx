@@ -3,8 +3,8 @@ import Select, { SelectProps } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useEffect, useState } from 'react';
 import { useTrans } from '@/lang/useLangMsg';
-import { arrUniq } from '@/common/helper';
 import './AppPerPageSelect.scss';
+import { arrUniq } from '@/common/helperFunctions/arr';
 
 type AppPerPageSelectProps = {
   label?: string;

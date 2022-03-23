@@ -4,8 +4,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
-import { arrUniq } from '@/common/helper';
 import { SelectOption } from '@/common/const/System';
+import { arrUniq } from '@/common/helperFunctions/arr';
 
 export type AppCheckBoxGroupProps = {
   label: string;

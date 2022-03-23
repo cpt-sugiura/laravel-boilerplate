@@ -3,7 +3,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 import React from 'react';
 import { infoColor } from '@/admin/theme';
 import { AppLoading } from '@/common/component/AppLoading';
-import { round } from '@/common/helper';
+import { round } from '@/common/helperFunctions/number';
 
 export type DownloadBtnProps = {
   onClick: OriginalButtonProps['onClick'];
