@@ -1,7 +1,7 @@
-COPY = cp
+COPY = cp -n
 
 ifeq ($(OS),Windows_NT)
-    COPY = copy
+    COPY = copy /-Y
 endif
 
 install:
