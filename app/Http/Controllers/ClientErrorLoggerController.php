@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\MemberAPI;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use JsonException;

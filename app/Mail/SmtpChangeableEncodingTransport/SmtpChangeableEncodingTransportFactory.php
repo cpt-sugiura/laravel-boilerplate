@@ -15,19 +15,19 @@ final class SmtpChangeableEncodingTransportFactory extends AbstractTransportFact
 {
     public function create(Dsn $dsn): TransportInterface
     {
-        $tls = 'smtps' === $dsn->getScheme() ? true : null;
+        $tls  = 'smtps' === $dsn->getScheme() ? true : null;
         $port = $dsn->getPort(0);
         $host = $dsn->getHost();
 
         // ここを esmtp から独自実装の SmtpChangeableEncodingTransport に代えただけ
         $transport = new SmtpChangeableEncodingTransport($host, $port, $tls, $this->dispatcher, $this->logger);
 
-        if ('' !== $dsn->getOption('verify_peer') && !filter_var($dsn->getOption('verify_peer', true), \FILTER_VALIDATE_BOOLEAN)) {
+        if ('' !== $dsn->getOption('verify_peer') && ! filter_var($dsn->getOption('verify_peer', true), \FILTER_VALIDATE_BOOLEAN)) {
             /** @var SocketStream $stream */
-            $stream = $transport->getStream();
+            $stream        = $transport->getStream();
             $streamOptions = $stream->getStreamOptions();
 
-            $streamOptions['ssl']['verify_peer'] = false;
+            $streamOptions['ssl']['verify_peer']      = false;
             $streamOptions['ssl']['verify_peer_name'] = false;
 
             $stream->setStreamOptions($streamOptions);

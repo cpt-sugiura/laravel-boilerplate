@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\MemberAPI\ClientErrorLoggerController;
+use App\Http\Controllers\ClientErrorLoggerController;
 
 Route::get('/', static function () {
     return 'インデックスページ';

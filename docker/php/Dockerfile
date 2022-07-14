@@ -1,5 +1,5 @@
 FROM node:16-buster as node
-FROM php:8.1-apache-buster
+FROM php:8.0-apache-buster
 # シェルを bash に置き換え
 SHELL ["/bin/bash", "-oeux", "pipefail", "-c"]
 

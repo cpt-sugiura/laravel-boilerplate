@@ -29,7 +29,7 @@ class MailParser implements MessageParserInterface
     /**
      * {@inheritdoc}
      */
-    public function parse($payload): MessagePart | Message\MessagePartInterface
+    public function parse($payload): MessagePart|Message\MessagePartInterface
     {
         if (is_string($payload)) {
             $iterator = new \ArrayIterator(file($payload, FILE_IGNORE_NEW_LINES));
@@ -166,8 +166,9 @@ class MailParser implements MessageParserInterface
         }
 
         $charset4Decode = match ($charset) {
-            'utf-8'       => 'utf-8',
+            'utf-8', 'UTF-8' => 'utf-8',
             'iso-2022-jp' => 'ISO-2022-JP',
+            default       => 'ascii'
         };
         foreach ($message->getHeaders() as $key => $header) {
             $headerStr = mb_convert_encoding(preg_replace_callback(

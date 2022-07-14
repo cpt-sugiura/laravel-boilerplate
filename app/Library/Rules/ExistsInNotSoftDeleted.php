@@ -22,10 +22,10 @@ class ExistsInNotSoftDeleted implements Rule
     /**
      * ExistsInNotSoftDeleted constructor.
      * @param BaseEloquent    $eloquentInstance exists ルールで参照するテーブルのインスタンス
-     * @param string|null     $column           exists ルールを適用するカラム
+     * @param string|null     $column           exists ルールを適用するカラム。デフォルトはインスタンス->getKeyName()
      * @param int|string|null $excludeId        exists ルールから除外するレコードのID
      */
-    public function __construct(BaseEloquent $eloquentInstance, ?string $column = null, int | string $excludeId = null)
+    public function __construct(BaseEloquent $eloquentInstance, ?string $column = null, int|string $excludeId = null)
     {
         $this->eloquentInstance = $eloquentInstance;
         $this->column           = $column ?? $eloquentInstance->getKeyName();

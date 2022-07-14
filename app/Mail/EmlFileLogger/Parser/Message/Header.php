@@ -39,7 +39,7 @@ class Header implements HeaderInterface
      * @param  string $value
      * @return static
      */
-    public function withValue(string $value): Header | static
+    public function withValue(string $value): Header|static
     {
         $clone        = clone $this;
         $clone->value = $value;
@@ -60,7 +60,7 @@ class Header implements HeaderInterface
      * @param  string $value
      * @return static
      */
-    public function withAttribute(string $name, string $value): Header | static
+    public function withAttribute(string $name, string $value): Header|static
     {
         $clone                    = clone $this;
         $clone->attributes[$name] = $value;

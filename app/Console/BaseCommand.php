@@ -30,7 +30,7 @@ abstract class BaseCommand extends Command
 
     /**
      * コンソール上での文字列強調
-     * @param  float|int|string  $str
+     * @param  float|int|string $str
      * @return string
      */
     protected static function highlight(float|int|string $str): string
@@ -40,7 +40,7 @@ abstract class BaseCommand extends Command
 
     /**
      * 色々情報の詰まったフォーマットに改造したプログレスバーを生成して返す。
-     * @param  int  $max
+     * @param  int         $max
      * @return ProgressBar
      */
     protected function createProgressBar(int $max = 0): ProgressBar
@@ -52,5 +52,12 @@ abstract class BaseCommand extends Command
         $progressBar->setProgressCharacter('>');
 
         return $progressBar;
+    }
+
+    protected function infoStartEnd(string $msg, callable $callback): void
+    {
+        $this->info('start: '.$msg);
+        $callback();
+        $this->warn('  end: '.$msg);
     }
 }

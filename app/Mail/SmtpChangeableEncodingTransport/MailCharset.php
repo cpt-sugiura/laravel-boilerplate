@@ -2,24 +2,24 @@
 
 namespace App\Mail\SmtpChangeableEncodingTransport;
 
-enum MailCharset
+class MailCharset
 {
-    case ISO_2022_JP;
-    case UTF_8;
+    public const ISO_2022_JP = 'ISO_2022_JP';
+    public const UTF_8       = 'UTF_8';
 
-    public function valueInContentType(): string
+    public static function valueInContentType(string $charset): string
     {
-        return match ($this) {
+        return match ($charset) {
             self::ISO_2022_JP => 'iso-2022-jp',
-            self::UTF_8 => 'utf-8',
-        };
-    }
-    public function valueInMimeHeader(): string
-    {
-        return match ($this) {
-            self::ISO_2022_JP => 'ISO-2022-JP',
-            self::UTF_8 => 'UTF-8',
+            default           => 'utf-8',
         };
     }
 
+    public static function valueInMimeHeader(string $charset): string
+    {
+        return match ($charset) {
+            self::ISO_2022_JP => 'ISO-2022-JP',
+            default           => 'UTF-8',
+        };
+    }
 }

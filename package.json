@@ -11,25 +11,36 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js",
         "watch": "npm run dev -- --watch",
         "watch-poll": "npm run watch -- --watch-poll",
-        "pre-commit": "npx lint-staged && node gitHooks/preCommit.js",
-        "post-merge": "node gitHooks/postMerge.js"
+        "pre-commit": "",
+        "post-merge": "node gitHooks/postMerge.js",
+        "lint-js": "eslint --fix resources",
+        "lint-css": "stylelint --fix resources/**/*.scss",
+        "lint-php": "docker-compose run --rm app ./vendor/bin/php-cs-fixer fix -vvv --config ./.php-cs-fixer.php .",
+        "test-php": "docker-compose run --rm app php /work/backend/vendor/phpunit/phpunit/phpunit --no-configuration /work/backend/tests --teamcity --cache-result-file=/work/backend/.phpunit.result.cache"
     },
     "simple-git-hooks": {
         "pre-commit": "npm run pre-commit",
         "post-merge": "npm run post-merge"
     },
     "app-lint-staged": {
-        "*.php": [
+        "*(?<!blade).php": [
             "docker-compose run --rm app ./vendor/bin/php-cs-fixer fix -vvv --config ./.php-cs-fixer.php",
             "git add"
         ]
     },
     "lint-staged": {
+        "*": [
+            "secretlint"
+        ],
         "*.{js,ts,vue,jsx,tsx}": [
             "eslint --fix",
             "git add"
         ],
-        "*.{json,css,scss}": [
+        "*.scss": [
+            "stylelint --fix",
+            "git add"
+        ],
+        "*.{json,css}": [
             "git add"
         ]
     },

@@ -2,16 +2,16 @@
 
 namespace App\Mail\SmtpChangeableEncodingTransport;
 
-enum MailEncode
+class MailEncode
 {
-    case BASE64;
-    case QUOTED_PRINTABLE;
+    public const BASE64           = 'BASE64';
+    public const QUOTED_PRINTABLE = 'QUOTED_PRINTABLE';
 
-    public function valueInMimeHeader(): string
+    public static function valueInMimeHeader(string $encode): string
     {
-        return match ($this) {
+        return match ($encode) {
             self::BASE64 => 'B',
-            self::QUOTED_PRINTABLE => 'Q',
+            default      => 'Q',
         };
     }
 }

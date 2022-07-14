@@ -3,13 +3,25 @@
 namespace App\Console\Commands\ForDevelop;
 
 use App\Console\BaseCommand;
+use App\Console\Commands\ForDevelop\MakeTestData\DependencySortTable;
+use App\Console\Commands\ForDevelop\MakeTestData\MakeTestValue;
+use App\Console\Commands\ForDevelop\MakeTestData\ShowColumnRecordModel;
+use App\Database\MySqlErrorCode;
 use App\Models\Eloquents\BaseEloquent;
+use Arr;
+use DB;
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Str;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Error;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 
 class MakeTestData extends BaseCommand
 {
@@ -26,24 +38,25 @@ class MakeTestData extends BaseCommand
     {
         return [
             new InputOption('all', 'a', InputOption::VALUE_NONE, 'テーブルに対応する全モデルを生成'),
-            new InputOption('table', 't', InputOption::VALUE_OPTIONAL, 'モデル生成元のテーブルを指定。namespace含むクラス名'),
-            new InputOption('count', 'c', InputOption::VALUE_OPTIONAL, '生成する1テーブル毎のテストデータの個数', 100)
+            new InputOption('class', 'c', InputOption::VALUE_OPTIONAL, 'モデル生成元のテーブルクラスを指定。namespace含むクラス名'),
+            new InputOption('count', '', InputOption::VALUE_OPTIONAL, '生成する1テーブル毎のテストデータの個数', 100),
+            new InputOption('ignore', 'i', InputOption::VALUE_OPTIONAL, '無視するテーブルをカンマ区切り', ''),
         ];
     }
 
     /**
      * Execute the console command.
      *
-     * @throws Exception
+     * @throws Exception|Throwable
      * @throws \Exception
      * @return int
      */
     public function handle(): int
     {
-        if ($this->option('table')) {
-            $classNames = [$this->option('table')];
+        if ($this->option('class')) {
+            $classNames = [$this->option('class')];
         } elseif ($this->option('all')) {
-            $classNames = self::getEloquentClassNames();
+            $classNames = $this->getClassNamesForAllOption();
         } else {
             $this->error('--all オプションを付けるか、-t [テーブル名] でテーブル名を指定する必要があります');
 
@@ -53,40 +66,15 @@ class MakeTestData extends BaseCommand
         $n = $this->option('count');
         foreach ($classNames as $className) {
             $this->info($className);
-            $this->main($className, $n);
+            try {
+                $this->main($className, $n);
+            } catch (Throwable $e) {
+                $this->error('current class: '.$className);
+                throw $e;
+            }
         }
 
         return static::SUCCESS;
-    }
-
-    private function makeStringTestData(Column $col): string
-    {
-        $base    = ($col->getComment() ?? $col->getName()).'_'.Str::random(4);
-        $trimmed = substr($base, -$col->getLength());
-
-        return iconv('UTF-8', 'UTF-8//IGNORE', $trimmed);
-    }
-
-    /**
-     * @param  Column          $col
-     * @param  array           $casts
-     * @throws \Exception
-     * @return string|int|null
-     */
-    protected function getTestValue(Column $col, array $casts): int|string|null
-    {
-        $colName = $col->getName();
-        if (! $col->getNotnull() && random_int(1, 100) <= 25) {
-            $val = null;
-        } else {
-            $val = match ($casts[$colName]) {
-                'string' => $this->makeStringTestData($col),
-                'date'   => date('Y-m-d H:i:s', random_int(strtotime('-1 months'), strtotime('+1 months'))),
-                'integer', 'float' => random_int(0, 10000),
-            };
-        }
-
-        return $val;
     }
 
     /**
@@ -98,33 +86,60 @@ class MakeTestData extends BaseCommand
     protected function main(string $className, int $n): void
     {
         /** @var BaseEloquent $model */
-        $model    = new $className();
-        $columns  = $model->getConnection()->getDoctrineSchemaManager()
-            ->listTableColumns($model->getTable());
-        $casts    = $model->getCasts();
-        $testData = collect();
-        $bar      = $this->createProgressBar($n);
+        $model       = new $className();
+        $foreignKeys = $this->getDbal()->listTableForeignKeys($model->getTable());
+        /** @var ForeignKeyConstraint[] $foreignKeys キーは外部キー制約がかかっているローカルテーブルカラム */
+        $foreignKeys    = collect($foreignKeys)->keyBy(function (ForeignKeyConstraint $fk) use ($model) {
+            $fkCols = $fk->getLocalColumns();
+            if (count($fkCols) >= 2) {
+                $this->warn('複数カラムの外部キー制約には未対応です。table: '.$model->getTable().' fk: '.$fk->getName());
+            }
+
+            return Arr::first($fkCols);
+        });
+        $columns        = $this->getDbal()->listTableColumns($model->getTable());
+        $casts          = $model->getCasts();
+        $rawShowColumns = $this->getRawShowColumns($model->getTable());
+        $testData       = collect();
+        $bar            = $this->createProgressBar($n);
         for ($i = 0; $i < $n; ++$i) {
             $td = [];
             foreach ($columns as $col) {
-                $td[$col->getName()] = $this->getTestValue($col, $casts);
+                if ($rawShowColumns[$col->getName()]->isAutoIncrement()) {
+                    // 自動で挿入されるオートインクリメントなカラムは無視
+                    continue;
+                }
+                if (isset($foreignKeys[$col->getName()])) {
+                    $td[$col->getName()] = $this->getFkRefValue($col, $foreignKeys[$col->getName()], $casts);
+                } else {
+                    $td[$col->getName()] = (new MakeTestValue())->getTestValue($col, $model, $rawShowColumns[$col->getName()]);
+                }
             }
             $testData->push((new $className())->forceFill($td));
-            if ($testData->count() >= 1000) {
-                $model::bulkInsert($testData);
+            if ($testData->count() >= 1000 || $i + 1 >= $n) {
+                try {
+                    $model::bulkInsert($testData);
+                } catch (QueryException $e) {
+                    if ($e->errorInfo[1] === MySqlErrorCode::ER_DUP_ENTRY) {
+                        --$i; // もう一回
+                        $this->warn('error occurred, but ignore');
+                        $this->warn($e);
+                    } else {
+                        throw $e;
+                    }
+                }
                 $testData = collect();
             }
             $bar->advance();
         }
-        $model::bulkInsert($testData);
         $bar->finish();
         $bar->clear();
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    protected static function getEloquentClassNames(): array
+    private function getEloquentClassNames(): array
     {
         // プロジェクトの Eloquents を置いてあるディレクトリ以下の PHP ファイルを探索
         // この探索は再帰的に行われる
@@ -137,7 +152,7 @@ class MakeTestData extends BaseCommand
         /** @var SplFileInfo $fileInfo */
         foreach ($files->getIterator() as $fileInfo) {
             $classNames[] = str_replace(
-                // ファイルパスを名前空間に入れ替え、拡張子を除去
+            // ファイルパスを名前空間に入れ替え、拡張子を除去
                 [app_path('Models/Eloquents'), '/', '.php'],
                 ['App\\Models\\Eloquents', '\\', ''],
                 $fileInfo->getRealPath()
@@ -149,15 +164,109 @@ class MakeTestData extends BaseCommand
             try {
                 // クラス名からインスタンスを作成。 Eloquent を継承しているか確認
                 $instance = new $className();
-                if ($instance instanceof \Illuminate\Database\Eloquent\Model) {
+                if ($instance instanceof Model) {
                     $eloquentClassNames[] = $className;
                 }
-            } catch (\Error $exception) {
+            } /* @noinspection PhpUnusedLocalVariableInspection */ catch (Error $exception) {
                 // インスタンス化できない対象について new を行った際のエラーを握りつぶす
                 // abstract class や trait が引っかかりやすい
             }
         }
 
         return $eloquentClassNames;
+    }
+
+    /**
+     * @throws Exception
+     * @return array
+     */
+    private function getClassNamesForAllOption(): array
+    {
+        $classNames       = array_unique($this->getEloquentClassNames());
+        if ($this->option('ignore')) {
+            $ignoreTables = explode(',', $this->option('ignore'));
+            $classNames   = array_filter($classNames, static fn ($c) => ! in_array((new $c())->getTable(), $ignoreTables, true));
+        }
+        $tableNames       = array_map(static fn (string $name) => (new $name())->getTable(), $classNames);
+        $sortedTables     = (new DependencySortTable())(
+            array_filter(
+                $this->getDbal()->listTables(),
+                static fn (Table $table) => in_array($table->getName(), $tableNames, true)
+            ),
+            explode(',', $this->option('ignore'))
+        );
+        $sortedTableNames = (array_map(static fn (Table $t) => $t->getName(), $sortedTables));
+        usort(
+            $classNames,
+            static fn ($a, $b) => array_search((new $a())->getTable(), $sortedTableNames, true)
+                <=> array_search((new $b())->getTable(), $sortedTableNames, true)
+        );
+
+        return $classNames;
+    }
+
+    /** @var array {[k: テーブル名]: {[p: カラム名]: int[]|string[]}} 外部キー制約の参照先の値のリスト */
+    private array $fkRefList = [];
+
+    /**
+     * @throws \Exception
+     */
+    private function getFkRefValue(Column $col, ForeignKeyConstraint $fk, array $casts): int|string|null
+    {
+        $colName = $col->getName();
+        if (! $col->getNotnull() && random_int(1, 100) <= 25) {
+            return null;
+        }
+
+        $refTableName  = $fk->getForeignTableName();
+        $refColumnName = Arr::first($fk->getForeignColumns());
+
+        $this->fkRefList[$refTableName] ??= [];
+        $this->fkRefList[$refTableName][$refColumnName] ??= [];
+        if (! empty($this->fkRefList[$refTableName][$refColumnName])) {
+            return fast_array_random($this->fkRefList[$refTableName][$refColumnName]);
+        }
+        $this->fkRefList[$refTableName][$refColumnName] = DB::query()
+            ->select()
+            ->from($refTableName)
+            ->get()
+            ->map(static fn ($record) => $record->$refColumnName)
+            ->toArray();
+
+        $ret = fast_array_random($this->fkRefList[$refTableName][$refColumnName]);
+
+        return match ($casts[$colName]) {
+            'string'  => (string) $ret,
+            'integer' => (int) $ret,
+            'float'   => (float) $ret,
+        };
+    }
+
+    /**
+     * @throws Exception
+     * @return AbstractSchemaManager
+     */
+    private function getDbal(): AbstractSchemaManager
+    {
+        $dbal = DB::connection()->getDoctrineSchemaManager();
+        $dbal->getDatabasePlatform()
+            ->registerDoctrineTypeMapping('geometry', 'string');
+
+        return $dbal;
+    }
+
+    /**
+     * @param  string                  $tableName
+     * @return ShowColumnRecordModel[] {[p: カラム名]: インスタンス}
+     */
+    private function getRawShowColumns(string $tableName): array
+    {
+        $result = DB::select('show columns from '.$tableName);
+        $ret    = [];
+        foreach ($result as $col) {
+            $ret[$col->Field] = ShowColumnRecordModel::createFromStdObject($col);
+        }
+
+        return $ret;
     }
 }

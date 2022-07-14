@@ -128,7 +128,7 @@ class MessagePart implements MessagePartInterface
      * @param  string $contents
      * @return static
      */
-    public function withContents(string $contents): MessagePart | static
+    public function withContents(string $contents): MessagePart|static
     {
         $clone           = clone $this;
         $clone->contents = $contents;
@@ -173,7 +173,7 @@ class MessagePart implements MessagePartInterface
      * @param  MessagePartInterface $part
      * @return static
      */
-    public function withPart(MessagePartInterface $part): MessagePart | static
+    public function withPart(MessagePartInterface $part): MessagePart|static
     {
         $clone = clone $this;
         if ($part->getHeaderValue('content-disposition') === 'attachment') {
